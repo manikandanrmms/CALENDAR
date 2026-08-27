@@ -325,7 +325,11 @@
   .bar-other{ background:var(--plum); }
 
   /* ---- Day view ---- */
-  .day-view{ display:flex; gap:0; }
+  .day-view{
+    display:block;
+    width:100%;
+    min-width:0;
+  }
   .day-header{
     font-family:'Fraunces', serif;
     font-size:20px; font-weight:600;
@@ -333,8 +337,11 @@
   }
   .day-grid{
     position:relative;
+    width:100%;
+    min-width:720px;
     border-top:1px solid var(--line);
-    max-width:640px;
+    background:var(--white);
+    overflow:hidden;
   }
   .hour-row{
     display:flex;
@@ -343,50 +350,59 @@
     position:relative;
   }
   .hour-label{
-    width:64px; flex-shrink:0;
+    width:76px; flex:0 0 76px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px; color:var(--ink-faint);
-    padding-top:4px;
+    padding-top:5px;
     text-align:right;
-    padding-right:12px;
+    padding-right:14px;
+    background:var(--bg);
+    border-right:1px solid var(--line);
   }
   .hour-slot{
     flex:1;
     cursor:pointer;
-    border-left:1px solid var(--line);
     position:relative;
+    background:linear-gradient(to bottom, transparent 50%, rgba(221,216,204,.18) 50%, rgba(221,216,204,.18) calc(50% + 1px), transparent calc(50% + 1px));
   }
-  .hour-slot:hover{ background:#F8F6F0; }
+  .hour-slot:hover{ background-color:#F8F6F0; }
   .now-line{
     position:absolute;
-    left:64px; right:0;
+    left:76px; right:0;
     height:0;
     border-top:2px solid var(--amber);
-    z-index:5;
+    z-index:8;
+    pointer-events:none;
   }
   .now-line::before{
     content:"";
-    position:absolute; left:-4px; top:-4px;
-    width:8px;height:8px;border-radius:50%;
+    position:absolute; left:-5px; top:-5px;
+    width:9px;height:9px;border-radius:50%;
     background:var(--amber);
   }
   .now-label{
-    position:absolute; left:6px; top:-8px;
+    position:absolute; left:8px; top:-9px;
     font-family:'IBM Plex Mono', monospace;
     font-size:9.5px; color:var(--amber-ink);
     background:var(--bg); padding:0 3px;
   }
   .day-event{
-    position:absolute; left:66px; right:6px;
-    border-radius:7px;
-    padding:6px 9px;
+    position:absolute;
+    border-radius:8px;
+    padding:8px 11px;
     cursor:pointer;
-    box-shadow:var(--shadow);
+    box-shadow:0 2px 8px rgba(28,36,48,.10);
     overflow:hidden;
-    z-index:2;
+    z-index:6;
+    border:1px solid rgba(28,36,48,.08);
+    min-width:0;
   }
-  .day-event .name{ font-size:12.5px; font-weight:700; }
-  .day-event .time{ font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.75; margin-top:1px;}
+  .day-event:hover{
+    box-shadow:0 4px 12px rgba(28,36,48,.16);
+    transform:translateY(-1px);
+  }
+  .day-event .name{ font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .day-event .time{ font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.75; margin-top:3px; white-space:nowrap; }
 
   .empty-state{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -1019,54 +1035,88 @@ const googleProvider = new GoogleAuthProvider();
 
   function renderDayView(){
     const wrap = el('div',{class:'day-view'});
-    const col = el('div',{});
-
     const key = dateKey(state.selectedDay);
     const dayEvents = eventsOn(key);
 
     const grid = el('div',{class:'day-grid'});
     const startHour = 6, endHour = 23;
+    const rowHeight = 56;
+    const labelWidth = 76;
 
     for(let h=startHour; h<=endHour; h++){
       const row = el('div',{class:'hour-row'});
       row.appendChild(el('div',{class:'hour-label'},[txt(fmtTime(pad(h)+":00"))]));
-      row.appendChild(el('div',{class:'hour-slot', onclick:()=> openModal(null, state.selectedDay, pad(h)+":00")}));
+      row.appendChild(el('div',{
+        class:'hour-slot',
+        onclick:()=>openModal(null, state.selectedDay, pad(h)+":00")
+      }));
       grid.appendChild(row);
     }
 
-    // now line
     const now = new Date();
     if(sameDay(now, state.selectedDay) && now.getHours()>=startHour && now.getHours()<=endHour){
       const minsFromStart = (now.getHours()-startHour)*60+now.getMinutes();
-      const top = (minsFromStart/60)*56;
+      const top = (minsFromStart/60)*rowHeight;
       const nowLine = el('div',{class:'now-line', style:'top:'+top+'px;'});
-      nowLine.appendChild(el('span',{class:'now-label'},[txt(fmtTime(pad(now.getHours())+":"+pad(now.getMinutes())))]));
+      nowLine.appendChild(el('span',{class:'now-label'},[
+        txt(fmtTime(pad(now.getHours())+":"+pad(now.getMinutes())))
+      ]));
       grid.appendChild(nowLine);
     }
 
-    // event blocks
-    dayEvents.forEach(ev=>{
-      if(!ev.start) return;
-      const startMin = timeToMinutes(ev.start);
-      const endMin = ev.end ? timeToMinutes(ev.end) : startMin+60;
-      const top = ((startMin-startHour*60)/60)*56;
-      const height = Math.max(((endMin-startMin)/60)*56, 30);
+    // Give overlapping events separate columns, similar to Teams/Outlook day view.
+    const positioned = [];
+    const timed = dayEvents.filter(ev=>ev.start).map(ev=>{
+      const start = timeToMinutes(ev.start);
+      const end = ev.end ? Math.max(timeToMinutes(ev.end), start+30) : start+60;
+      return {ev,start,end};
+    }).sort((a,b)=>a.start-b.start || b.end-a.end);
+
+    timed.forEach(item=>{
+      let placed=false;
+      for(const group of positioned){
+        if(item.start < group.maxEnd){
+          group.items.push(item);
+          group.maxEnd=Math.max(group.maxEnd,item.end);
+          placed=true;
+          break;
+        }
+      }
+      if(!placed) positioned.push({items:[item],maxEnd:item.end});
+    });
+
+    timed.forEach(item=>{
+      // Recalculate the smallest group of overlapping events this item belongs to.
+      const overlaps = timed.filter(other=>other!==item && other.start < item.end && other.end > item.start);
+      const laneItems = [item,...overlaps].sort((a,b)=>a.start-b.start || b.end-a.end);
+      const lane = laneItems.indexOf(item);
+      const lanes = Math.max(1, laneItems.length);
+
+      const top = ((item.start-startHour*60)/60)*rowHeight + 2;
+      const height = Math.max(((item.end-item.start)/60)*rowHeight - 4, 34);
+      const leftOffset = labelWidth + 8;
+      const rightGap = 10;
+      const widthCalc = `calc((100% - ${labelWidth+rightGap+8}px) / ${lanes} - 6px)`;
+      const leftCalc = `calc(${leftOffset}px + ((100% - ${labelWidth+rightGap+8}px) / ${lanes}) * ${lane})`;
+
       const block = el('div',{
-        class:'day-event cat-'+CATS[ev.category].cls,
-        style:'top:'+top+'px; height:'+height+'px;',
-        onclick:(e)=>{ e.stopPropagation(); openModal(ev); }
+        class:'day-event cat-'+CATS[item.ev.category].cls,
+        style:`top:${top}px;height:${height}px;left:${leftCalc};width:${widthCalc};`,
+        title:item.ev.title,
+        onclick:(e)=>{ e.stopPropagation(); openModal(item.ev); }
       },[
-        el('div',{class:'name'},[txt(ev.title)]),
-        el('div',{class:'time'},[txt(fmtTime(ev.start)+(ev.end? " – "+fmtTime(ev.end):""))])
+        el('div',{class:'name'},[txt(item.ev.title)]),
+        el('div',{class:'time'},[
+          txt(fmtTime(item.ev.start)+(item.ev.end ? " – "+fmtTime(item.ev.end) : ""))
+        ])
       ]);
       grid.appendChild(block);
     });
 
-    col.appendChild(grid);
-    wrap.appendChild(col);
+    wrap.appendChild(grid);
 
     if(dayEvents.length===0){
-      wrap.appendChild(el('div',{class:'empty-state', style:'margin-left:20px;'},[
+      wrap.appendChild(el('div',{class:'empty-state'},[
         el('div',{class:'big'},[txt('Nothing scheduled')]),
         el('div',{},[txt('Click a time slot to add an event')])
       ]));
