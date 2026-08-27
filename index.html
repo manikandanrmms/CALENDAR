@@ -675,7 +675,7 @@ const googleProvider = new GoogleAuthProvider();
 
 
   function clearOverlay(){
-    document.querySelectorAll('body > .overlay').forEach(node=>node.remove());
+    document.querySelectorAll('.overlay').forEach(node=>node.remove());
   }
 
   function showToast(message){
@@ -698,9 +698,9 @@ const googleProvider = new GoogleAuthProvider();
     }
     app.appendChild(renderSidebar());
     app.appendChild(renderMain());
-    if(state.modalOpen) document.body.appendChild(renderModal());
+    if(state.modalOpen) app.appendChild(renderModal());
     if(state.toast){
-      document.body.appendChild(el('div',{class:'app-toast'},[txt(state.toast)]));
+      app.appendChild(el('div',{class:'app-toast'},[txt(state.toast)]));
     }
   }
 
@@ -823,7 +823,7 @@ const googleProvider = new GoogleAuthProvider();
     ]));
 
     // new event
-    sb.appendChild(el('button',{class:'new-btn', onclick:()=>openModal(null, state.selectedDay)},[
+    sb.appendChild(el('button',{class:'new-btn', type:'button', onclick:()=>openModal(null, state.selectedDay)},[
       el('span',{},[txt('+')]), el('span',{},[txt('New event')])
     ]));
 
@@ -1174,8 +1174,8 @@ const googleProvider = new GoogleAuthProvider();
       }},[txt('Delete')]));
     }
     const rightActions = el('div',{style:'display:flex; gap:8px;'},[
-      el('button',{class:'btn btn-ghost', onclick: closeModal},[txt('Cancel')]),
-      el('button',{class:'btn btn-primary', onclick: ()=> saveFromModal()},[txt('Save')]),
+      el('button',{class:'btn btn-ghost', type:'button', onclick:(e)=>{ e.preventDefault(); e.stopPropagation(); closeModal(); }},[txt('Cancel')]),
+      el('button',{class:'btn btn-primary', type:'button', onclick: async(e)=>{ e.preventDefault(); await saveFromModal(); }},[txt('Save')]),
     ]);
     actions.appendChild(leftActions);
     actions.appendChild(rightActions);
