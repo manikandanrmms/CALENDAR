@@ -449,6 +449,7 @@
   .btn-primary:hover{ background:#000; }
   .btn-ghost{ background:none; color:var(--ink-soft); }
   .btn-ghost:hover{ color:var(--ink); }
+  .btn:disabled{opacity:.55;cursor:not-allowed;}
   .btn-danger{ background:none; color:#A6432F; }
   .btn-danger:hover{ text-decoration:underline; }
   .err{ color:#A6432F; font-size:11.5px; margin-top:-8px; margin-bottom:12px; }
@@ -594,14 +595,17 @@ const googleProvider = new GoogleAuthProvider();
   }
 
   async function upsertEvent(ev){
-    if(!auth.currentUser) return;
+    if(!auth.currentUser){
+      state.modalError = "Please sign in before saving an event.";
+      return false;
+    }
     try{
       if(ev.id && state.events.some(e=>e.id===ev.id)){
         const eventRef = doc(db, "users", auth.currentUser.uid, "events", ev.id);
         const {id, ...data} = ev;
         await updateDoc(eventRef, {...data, updatedAt:serverTimestamp()});
         const idx = state.events.findIndex(e=>e.id===ev.id);
-        if(idx>=0) state.events[idx]=ev;
+        if(idx>=0) state.events[idx] = ev;
       }else{
         const {id, ...data} = ev;
         const ref = await addDoc(eventsCollection(), {
@@ -612,24 +616,33 @@ const googleProvider = new GoogleAuthProvider();
         ev.id = ref.id;
         state.events.push(ev);
       }
-      render();
+      state.modalError = null;
+      return true;
     }catch(e){
       console.error("Could not save event:", e);
-      state.modalError = e?.code === "unavailable" ? "Firestore is temporarily unreachable. Check your Internet/VPN/firewall and try again." : "Could not save this event. Check Firestore Security Rules.";
-      render();
+      state.modalError = e?.code === "unavailable"
+        ? "Firestore is temporarily unreachable. Please check your Internet/VPN/firewall and try again."
+        : "Could not save this event. Check Firestore Security Rules.";
+      return false;
     }
   }
 
   async function deleteEvent(id){
-    if(!auth.currentUser) return;
+    if(!auth.currentUser){
+      state.modalError = "Please sign in before deleting an event.";
+      return false;
+    }
     try{
       await deleteDoc(doc(db, "users", auth.currentUser.uid, "events", id));
       state.events = state.events.filter(e=>e.id!==id);
-      render();
+      state.modalError = null;
+      return true;
     }catch(e){
       console.error("Could not delete event:", e);
-      state.modalError = "Could not delete this event. Check Firestore Security Rules.";
-      render();
+      state.modalError = e?.code === "unavailable"
+        ? "Firestore is temporarily unreachable. Please try again."
+        : "Could not delete this event. Check Firestore Security Rules.";
+      return false;
     }
   }
 
@@ -1104,9 +1117,18 @@ const googleProvider = new GoogleAuthProvider();
     const actions = el('div',{class:'modal-actions'});
     const leftActions = el('div',{},[]);
     if(!isNew){
-      leftActions.appendChild(el('button',{class:'btn btn-danger', onclick:()=>{
-        deleteEvent(state.editing.id);
-        closeModal();
+      leftActions.appendChild(el('button',{class:'btn btn-danger', onclick:async()=>{
+        if(!confirm('Delete this event? This cannot be undone.')) return;
+        const btn = document.querySelector('.modal .btn-danger');
+        if(btn){ btn.disabled=true; btn.textContent='Deleting…'; btn.style.opacity='.65'; btn.style.cursor='wait'; }
+        const deleted = await deleteEvent(state.editing.id);
+        if(deleted){
+          state.modalOpen=false;
+          state.editing=null;
+          render();
+        }else{
+          render();
+        }
       }},[txt('Delete')]));
     }
     const rightActions = el('div',{style:'display:flex; gap:8px;'},[
@@ -1125,27 +1147,60 @@ const googleProvider = new GoogleAuthProvider();
     return overlay;
   }
 
-  function saveFromModal(){
-    const title = document.getElementById('f-title').value.trim();
-    const date = document.getElementById('f-date').value;
-    const start = document.getElementById('f-start').value;
-    const end = document.getElementById('f-end').value;
-    const notes = document.getElementById('f-notes').value;
+  async function saveFromModal(){
+    const titleEl = document.getElementById('f-title');
+    const dateEl = document.getElementById('f-date');
+    const startEl = document.getElementById('f-start');
+    const endEl = document.getElementById('f-end');
+    const notesEl = document.getElementById('f-notes');
 
-    if(!title){ state.modalError = "Give this event a title."; render(); return; }
-    if(!date){ state.modalError = "Pick a date."; render(); return; }
-    if(start && end && timeToMinutes(end) <= timeToMinutes(start)){
+    const title = titleEl?.value.trim() || "";
+    const date = dateEl?.value || "";
+    const startTime = startEl?.value || "";
+    const endTime = endEl?.value || "";
+    const notes = notesEl?.value || "";
+
+    if(!title){
+      state.modalError = "Give this event a title.";
+      render();
+      setTimeout(()=>document.getElementById('f-title')?.focus(),0);
+      return;
+    }
+    if(!date){
+      state.modalError = "Pick a date.";
+      render();
+      return;
+    }
+    if(startTime && endTime && timeToMinutes(endTime) <= timeToMinutes(startTime)){
       state.modalError = "End time should be after the start time.";
       render();
       return;
     }
 
-    const ev = { ...state.editing, title, date, start, end, notes };
-    upsertEvent(ev);
+    const ev = { ...state.editing, title, date, start:startTime, end:endTime, notes };
+
+    const saveBtn = document.querySelector('.modal .btn-primary');
+    if(saveBtn){
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving…";
+      saveBtn.style.opacity = ".65";
+      saveBtn.style.cursor = "wait";
+    }
+
+    const saved = await upsertEvent(ev);
+
+    if(!saved){
+      render();
+      return;
+    }
+
     state.selectedDay = parseKey(date);
     state.cursor = new Date(state.selectedDay.getFullYear(), state.selectedDay.getMonth(), 1);
-    closeModal();
+    state.modalOpen = false;
+    state.editing = null;
+    render();
   }
+
 
   // Firebase authentication controls access to the calendar.
   onAuthStateChanged(auth, async (user)=>{
