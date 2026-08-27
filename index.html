@@ -452,6 +452,34 @@
   .btn-danger:hover{ text-decoration:underline; }
   .err{ color:#A6432F; font-size:11.5px; margin-top:-8px; margin-bottom:12px; }
 
+
+  /* ---------- Firebase Authentication ---------- */
+  .auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
+  .auth-card{width:100%;max-width:410px;background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:30px;}
+  .auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+  .auth-brand .mark{font-family:'Fraunces',serif;font-weight:600;font-size:15px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;}
+  .auth-brand h1{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin:0;}
+  .auth-sub{font-size:12px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+  .auth-title{font-family:'Fraunces',serif;font-size:24px;font-weight:600;margin:0 0 5px;}
+  .auth-copy{font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;}
+  .auth-field{margin-bottom:13px;}
+  .auth-field label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;}
+  .auth-field input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 11px;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);background:var(--bg);}
+  .auth-field input:focus{outline:2px solid var(--amber);outline-offset:0;border-color:transparent;}
+  .auth-primary{width:100%;background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:11px 14px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;}
+  .auth-primary:hover{background:#000;}
+  .auth-google{width:100%;background:var(--white);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;margin-top:10px;}
+  .auth-google:hover{background:var(--bg-panel);}
+  .auth-divider{display:flex;align-items:center;gap:10px;color:var(--ink-faint);font-size:10px;margin:16px 0;}
+  .auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line-soft);flex:1;}
+  .auth-switch{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:17px;}
+  .auth-link{background:none;border:none;color:var(--amber-ink);font-weight:700;cursor:pointer;padding:0;font:inherit;}
+  .auth-error{color:#A6432F;background:#FCEDEA;border:1px solid #EBC9C1;border-radius:7px;padding:9px 10px;font-size:11.5px;margin-bottom:12px;}
+  .user-area{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px;}
+  .user-email{font-size:10.5px;color:var(--ink-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;}
+  .logout-btn{background:none;border:1px solid var(--line);border-radius:7px;color:var(--ink-soft);padding:5px 8px;font-size:10.5px;font-weight:600;cursor:pointer;}
+  .logout-btn:hover{color:var(--ink);border-color:var(--ink-soft);}
+
   ::-webkit-scrollbar{ width:8px; height:8px; }
   ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
 </style>
@@ -460,7 +488,30 @@
 
 <div class="app" id="app"></div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCG1VUXp4U1_lIeGHqAAIC2Zo6bZYZJUzY",
+  authDomain: "calendar-app-cf088.firebaseapp.com",
+  projectId: "calendar-app-cf088",
+  storageBucket: "calendar-app-cf088.firebasestorage.app",
+  messagingSenderId: "900092970911",
+  appId: "1:900092970911:web:1edd0c8eca1acd7efd1faa"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+
 (function(){
   "use strict";
 
@@ -497,34 +548,67 @@
     editing:null,         // event being edited, or null for new
     modalOpen:false,
     modalDefaults:null,
+    authMode:"login",
+    authError:null,
   };
 
+  function eventsCollection(){
+    if(!auth.currentUser) throw new Error("You must be signed in.");
+    return collection(db, "users", auth.currentUser.uid, "events");
+  }
+
   async function loadEvents(){
+    if(!auth.currentUser) return;
+    state.loaded = false;
     try{
-      const res = await window.storage.get('almanac:events', false);
-      state.events = res && res.value ? JSON.parse(res.value) : [];
+      const snapshot = await getDocs(eventsCollection());
+      state.events = snapshot.docs.map(d=>({id:d.id, ...d.data()}));
     }catch(e){
+      console.error("Could not load events:", e);
       state.events = [];
     }
     state.loaded = true;
     render();
   }
-  async function saveEvents(){
+
+  async function upsertEvent(ev){
+    if(!auth.currentUser) return;
     try{
-      await window.storage.set('almanac:events', JSON.stringify(state.events), false);
+      if(ev.id && state.events.some(e=>e.id===ev.id)){
+        const eventRef = doc(db, "users", auth.currentUser.uid, "events", ev.id);
+        const {id, ...data} = ev;
+        await updateDoc(eventRef, {...data, updatedAt:serverTimestamp()});
+        const idx = state.events.findIndex(e=>e.id===ev.id);
+        if(idx>=0) state.events[idx]=ev;
+      }else{
+        const {id, ...data} = ev;
+        const ref = await addDoc(eventsCollection(), {
+          ...data,
+          createdAt:serverTimestamp(),
+          updatedAt:serverTimestamp()
+        });
+        ev.id = ref.id;
+        state.events.push(ev);
+      }
+      render();
     }catch(e){
-      console.error("Could not save events", e);
+      console.error("Could not save event:", e);
+      state.modalError = "Could not save this event. Check Firestore Security Rules.";
+      render();
     }
   }
 
-  function upsertEvent(ev){
-    const idx = state.events.findIndex(e=>e.id===ev.id);
-    if(idx>=0) state.events[idx]=ev; else state.events.push(ev);
-    saveEvents();
-  }
-  function deleteEvent(id){
-    state.events = state.events.filter(e=>e.id!==id);
-    saveEvents();
+  async function deleteEvent(id){
+    if(!auth.currentUser) return;
+    try{
+      await deleteDoc(doc(db, "users", auth.currentUser.uid, "events", id));
+      state.events = state.events.filter(e=>e.id!==id);
+      render();
+    }catch(e){
+      console.error("Could not delete event:", e);
+      state.modalError = "Could not delete this event. Check Firestore Security Rules.";
+      render();
+    }
   }
 
   function eventsOn(key){
@@ -536,6 +620,10 @@
   function render(){
     const app = document.getElementById('app');
     app.innerHTML = "";
+    if(!auth.currentUser){
+      app.appendChild(renderAuth());
+      return;
+    }
     app.appendChild(renderSidebar());
     app.appendChild(renderMain());
     if(state.modalOpen) document.body.appendChild(renderModal());
@@ -553,6 +641,80 @@
     return e;
   }
   function txt(t){ return document.createTextNode(t); }
+
+
+  function friendlyAuthError(error){
+    const code = error?.code || "";
+    const messages = {
+      "auth/invalid-credential":"Email or password is incorrect.",
+      "auth/invalid-email":"Please enter a valid email address.",
+      "auth/email-already-in-use":"An account already exists with this email.",
+      "auth/weak-password":"Password should be at least 6 characters.",
+      "auth/popup-closed-by-user":"Google sign-in was cancelled.",
+      "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
+      "auth/too-many-requests":"Too many attempts. Please try again later."
+    };
+    return messages[code] || error?.message || "Authentication failed.";
+  }
+
+  function renderAuth(){
+    const shell = el('div',{class:'auth-shell'});
+    const card = el('div',{class:'auth-card'});
+    const isLogin = state.authMode==="login";
+
+    card.appendChild(el('div',{class:'auth-brand'},[
+      el('div',{class:'mark'},[txt('A')]),
+      el('div',{},[
+        el('h1',{},[txt('Almanac')]),
+        el('div',{class:'auth-sub'},[txt('CALENDAR · SCHEDULER')])
+      ])
+    ]));
+    card.appendChild(el('h2',{class:'auth-title'},[txt(isLogin?'Welcome back':'Create your account')]));
+    card.appendChild(el('p',{class:'auth-copy'},[txt(isLogin?'Sign in to access your cloud calendar.':'Create a secure account for your cloud calendar.')]));
+
+    if(state.authError) card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
+
+    const email = el('input',{type:'email',id:'auth-email',placeholder:'you@example.com',autocomplete:'email'});
+    const password = el('input',{type:'password',id:'auth-password',placeholder:'Password',autocomplete:isLogin?'current-password':'new-password'});
+    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Email')]),email]));
+    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Password')]),password]));
+
+    card.appendChild(el('button',{class:'auth-primary',onclick:async()=>{
+      const emailValue=email.value.trim(), passwordValue=password.value;
+      if(!emailValue || !passwordValue){state.authError="Enter your email and password.";render();return;}
+      try{
+        state.authError=null;
+        if(isLogin) await signInWithEmailAndPassword(auth,emailValue,passwordValue);
+        else await createUserWithEmailAndPassword(auth,emailValue,passwordValue);
+      }catch(err){
+        console.error(err);
+        state.authError=friendlyAuthError(err);
+        render();
+      }
+    }},[txt(isLogin?'Sign in':'Create account')]));
+
+    card.appendChild(el('div',{class:'auth-divider'},[txt('OR')]));
+    card.appendChild(el('button',{class:'auth-google',onclick:async()=>{
+      try{
+        state.authError=null;
+        await signInWithPopup(auth,googleProvider);
+      }catch(err){
+        console.error(err);
+        state.authError=friendlyAuthError(err);
+        render();
+      }
+    }},[txt('Continue with Google')]));
+
+    card.appendChild(el('div',{class:'auth-switch'},[
+      txt(isLogin?"Don't have an account? ":"Already have an account? "),
+      el('button',{class:'auth-link',onclick:()=>{
+        state.authMode=isLogin?'register':'login';
+        state.authError=null;
+        render();
+      }},[txt(isLogin?'Create one':'Sign in')])
+    ]));
+    return shell.appendChild(card), shell;
+  }
 
   function renderSidebar(){
     const sb = el('div',{class:'sidebar'});
@@ -586,6 +748,11 @@
 
     // upcoming
     sb.appendChild(renderUpcoming());
+
+    sb.appendChild(el('div',{class:'user-area'},[
+      el('div',{class:'user-email',title:auth.currentUser?.email||""},[txt(auth.currentUser?.email||"Signed in")]),
+      el('button',{class:'logout-btn',onclick:async()=>{await signOut(auth);}},[txt('Sign out')])
+    ]));
 
     return sb;
   }
@@ -939,9 +1106,21 @@
     closeModal();
   }
 
-  // init
-  render();
-  loadEvents();
+  // Firebase authentication controls access to the calendar.
+  onAuthStateChanged(auth, async (user)=>{
+    state.modalOpen = false;
+    state.editing = null;
+    state.authError = null;
+    if(user){
+      state.loaded = false;
+      render();
+      await loadEvents();
+    }else{
+      state.events = [];
+      state.loaded = false;
+      render();
+    }
+  });
 
   // live-update the now-line every minute
   setInterval(()=>{ if(state.view==='day' && !state.modalOpen) render(); }, 60000);
