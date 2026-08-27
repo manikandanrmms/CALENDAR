@@ -499,6 +499,25 @@
   .logout-btn{background:none;border:1px solid var(--line);border-radius:7px;color:var(--ink-soft);padding:5px 8px;font-size:10.5px;font-weight:600;cursor:pointer;}
   .logout-btn:hover{color:var(--ink);border-color:var(--ink-soft);}
 
+
+  .app-toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%);
+    z-index:10001;
+    background:var(--ink);
+    color:var(--bg);
+    border-radius:8px;
+    padding:10px 16px;
+    box-shadow:var(--shadow-lg);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.1px;
+    animation:toastIn .18s ease-out;
+  }
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+
   ::-webkit-scrollbar{ width:8px; height:8px; }
   ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
 </style>
@@ -572,6 +591,8 @@ const googleProvider = new GoogleAuthProvider();
     authMode:"login",
     authError:null,
     authBusy:false,
+    toast:"",
+    toastTimer:null,
   };
 
   function eventsCollection(){
@@ -652,7 +673,23 @@ const googleProvider = new GoogleAuthProvider();
 
   /* ---------------- Rendering ---------------- */
 
+
+  function clearOverlay(){
+    document.querySelectorAll('body > .overlay').forEach(node=>node.remove());
+  }
+
+  function showToast(message){
+    state.toast = message;
+    if(state.toastTimer) clearTimeout(state.toastTimer);
+    state.toastTimer = setTimeout(()=>{
+      state.toast = "";
+      state.toastTimer = null;
+      render();
+    }, 2200);
+  }
+
   function render(){
+    clearOverlay();
     const app = document.getElementById('app');
     app.innerHTML = "";
     if(!auth.currentUser){
@@ -662,6 +699,9 @@ const googleProvider = new GoogleAuthProvider();
     app.appendChild(renderSidebar());
     app.appendChild(renderMain());
     if(state.modalOpen) document.body.appendChild(renderModal());
+    if(state.toast){
+      document.body.appendChild(el('div',{class:'app-toast'},[txt(state.toast)]));
+    }
   }
 
   function el(tag, attrs, children){
@@ -1059,6 +1099,7 @@ const googleProvider = new GoogleAuthProvider();
   function closeModal(){
     state.modalOpen = false;
     state.editing = null;
+    clearOverlay();
     render();
   }
 
@@ -1125,7 +1166,8 @@ const googleProvider = new GoogleAuthProvider();
         if(deleted){
           state.modalOpen=false;
           state.editing=null;
-          render();
+          clearOverlay();
+          showToast("Event deleted");
         }else{
           render();
         }
@@ -1198,7 +1240,8 @@ const googleProvider = new GoogleAuthProvider();
     state.cursor = new Date(state.selectedDay.getFullYear(), state.selectedDay.getMonth(), 1);
     state.modalOpen = false;
     state.editing = null;
-    render();
+    clearOverlay();
+    showToast("Event saved");
   }
 
 
