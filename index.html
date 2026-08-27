@@ -513,7 +513,7 @@ import {
   createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
-  getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
+  initializeFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -527,7 +527,9 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
+const db = initializeFirestore(firebaseApp, {
+  experimentalForceLongPolling: true
+});
 const googleProvider = new GoogleAuthProvider();
 
 (function(){
@@ -585,6 +587,7 @@ const googleProvider = new GoogleAuthProvider();
     }catch(e){
       console.error("Could not load events:", e);
       state.events = [];
+      state.modalError = "Firestore could not connect. Please check your Internet/VPN/firewall and try again.";
     }
     state.loaded = true;
     render();
@@ -612,7 +615,7 @@ const googleProvider = new GoogleAuthProvider();
       render();
     }catch(e){
       console.error("Could not save event:", e);
-      state.modalError = "Could not save this event. Check Firestore Security Rules.";
+      state.modalError = e?.code === "unavailable" ? "Firestore is temporarily unreachable. Check your Internet/VPN/firewall and try again." : "Could not save this event. Check Firestore Security Rules.";
       render();
     }
   }
