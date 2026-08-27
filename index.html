@@ -46,6 +46,7 @@
     display:grid;
     grid-template-columns: 272px 1fr;
     min-height:100vh;
+    width:100%;
   }
   @media (max-width: 860px){
     .app{ grid-template-columns: 1fr; }
@@ -454,8 +455,25 @@
 
 
   /* ---------- Firebase Authentication ---------- */
-  .auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
-  .auth-card{width:100%;max-width:410px;background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:30px;}
+  .auth-shell{
+    min-height:100vh;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:var(--bg);
+  }
+  .auth-card{
+    width:100%;
+    max-width:410px;
+    margin:0 auto;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:var(--shadow-lg);
+    padding:30px;
+  }
   .auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
   .auth-brand .mark{font-family:'Fraunces',serif;font-weight:600;font-size:15px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;}
   .auth-brand h1{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin:0;}
@@ -550,6 +568,7 @@ const googleProvider = new GoogleAuthProvider();
     modalDefaults:null,
     authMode:"login",
     authError:null,
+    authBusy:false,
   };
 
   function eventsCollection(){
@@ -650,7 +669,8 @@ const googleProvider = new GoogleAuthProvider();
       "auth/invalid-email":"Please enter a valid email address.",
       "auth/email-already-in-use":"An account already exists with this email.",
       "auth/weak-password":"Password should be at least 6 characters.",
-      "auth/popup-closed-by-user":"Google sign-in was cancelled.",
+      "auth/popup-closed-by-user":"Google sign-in was cancelled. Please try again.",
+      "auth/cancelled-popup-request":"A Google sign-in window was already in progress. Close any Google sign-in window and click the button once.",
       "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
       "auth/too-many-requests":"Too many attempts. Please try again later."
     };
@@ -694,16 +714,34 @@ const googleProvider = new GoogleAuthProvider();
     }},[txt(isLogin?'Sign in':'Create account')]));
 
     card.appendChild(el('div',{class:'auth-divider'},[txt('OR')]));
-    card.appendChild(el('button',{class:'auth-google',onclick:async()=>{
-      try{
-        state.authError=null;
-        await signInWithPopup(auth,googleProvider);
-      }catch(err){
-        console.error(err);
-        state.authError=friendlyAuthError(err);
-        render();
+    card.appendChild(el('button',{
+      class:'auth-google',
+      disabled:state.authBusy,
+      style:state.authBusy?'opacity:.6;cursor:wait;':'',
+      onclick:async()=>{
+        if(state.authBusy) return;
+
+        // OAuth popups need a real web origin. Opening the downloaded HTML
+        // directly with file:// can cause Firebase to cancel the popup flow.
+        if(location.protocol === 'file:'){
+          state.authError = "Google sign-in needs the app to run from http://localhost or a hosted HTTPS address. Email/password sign-in can still be tested here.";
+          render();
+          return;
+        }
+
+        try{
+          state.authBusy=true;
+          state.authError=null;
+          render();
+          await signInWithPopup(auth,googleProvider);
+        }catch(err){
+          console.error(err);
+          state.authBusy=false;
+          state.authError=friendlyAuthError(err);
+          render();
+        }
       }
-    }},[txt('Continue with Google')]));
+    },[txt(state.authBusy?'Opening Google…':'Continue with Google')]));
 
     card.appendChild(el('div',{class:'auth-switch'},[
       txt(isLogin?"Don't have an account? ":"Already have an account? "),
@@ -1111,6 +1149,7 @@ const googleProvider = new GoogleAuthProvider();
     state.modalOpen = false;
     state.editing = null;
     state.authError = null;
+    state.authBusy = false;
     if(user){
       state.loaded = false;
       render();
