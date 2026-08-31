@@ -959,6 +959,12 @@
 
 
   /* ---------- Google-only Dashboard Login ---------- */
+  .app.auth-app{
+    display:block !important;
+    width:100vw;
+    min-height:100vh;
+  }
+
   .auth-shell{
     min-height:100vh;
     width:100%;
@@ -967,6 +973,7 @@
     background:#F7F1E8;
     overflow:hidden;
     position:relative;
+    grid-column:1 / -1;
   }
 
   .auth-visual{
@@ -1224,6 +1231,8 @@
   .google-login-btn{
     width:100%;
     min-height:56px;
+    width:100%;
+    box-sizing:border-box;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -1362,7 +1371,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut
+  getAuth, onAuthStateChanged, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   initializeFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
@@ -1525,9 +1534,11 @@ const googleProvider = new GoogleAuthProvider();
     const app = document.getElementById('app');
     app.innerHTML = "";
     if(!auth.currentUser){
+      app.className = "app auth-app";
       app.appendChild(renderAuth());
       return;
     }
+    app.className = "app";
     app.appendChild(renderSidebar());
     app.appendChild(renderMain());
     if(state.modalOpen) app.appendChild(renderModal());
@@ -1559,8 +1570,8 @@ const googleProvider = new GoogleAuthProvider();
       "auth/operation-not-allowed":"Google sign-in is not enabled in your Firebase Authentication settings.",
       "auth/network-request-failed":"Network error while contacting Google. Please check your connection.",
       "auth/popup-closed-by-user":"Google sign-in was cancelled. Please try again.",
-      "auth/cancelled-popup-request":"A Google sign-in window was already in progress. Close any Google sign-in window and click the button once.",
-      "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
+      "auth/cancelled-popup-request":"A Google sign-in request was already in progress. Please try again.",
+      "auth/popup-blocked":"Google sign-in was blocked by the browser. Please try again.",
       "auth/too-many-requests":"Too many attempts. Please try again later."
     };
     return messages[code] || error?.message || "Authentication failed.";
@@ -1630,7 +1641,9 @@ const googleProvider = new GoogleAuthProvider();
           state.authBusy=true;
           state.authError=null;
           render();
-          await signInWithPopup(auth,googleProvider);
+          // Full-page Google OAuth redirect is more reliable than a popup when
+          // browsers/extensions block OAuth popups.
+          await signInWithRedirect(auth,googleProvider);
         }catch(err){
           console.error(err);
           state.authBusy=false;
@@ -2181,6 +2194,18 @@ const googleProvider = new GoogleAuthProvider();
 
 
   // Firebase authentication controls access to the calendar.
+  // Complete a Google redirect sign-in when the browser returns to this page.
+  (async()=>{
+    try{
+      await getRedirectResult(auth);
+    }catch(err){
+      console.error("Google redirect sign-in failed:", err);
+      state.authBusy=false;
+      state.authError=friendlyAuthError(err);
+      render();
+    }
+  })();
+
   onAuthStateChanged(auth, async (user)=>{
     state.modalOpen = false;
     state.editing = null;
