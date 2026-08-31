@@ -1228,6 +1228,19 @@
     animation:errorShake .42s ease both;
   }
 
+
+  .auth-runtime-error{
+    margin-top:14px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:#FCEDEA;
+    border:1px solid #EBC9C1;
+    color:#8D3D2E;
+    font-size:10px;
+    line-height:1.5;
+    word-break:break-word;
+  }
+
   .google-login-btn{
     width:100%;
     min-height:56px;
@@ -1259,12 +1272,6 @@
   }
 
   .google-login-btn:active{transform:translateY(0) scale(.985);}
-
-
-  .google-login-btn .google-login-label{display:inline-block;min-width:150px;text-align:left;}
-  .google-login-btn.busy{cursor:wait;opacity:.92;}
-  .google-login-btn.busy .google-login-label{animation:loginTextPulse 1.2s ease-in-out infinite;}
-  @keyframes loginTextPulse{0%,100%{opacity:.72}50%{opacity:1}}
 
   .google-icon{
     width:22px;height:22px;
@@ -1377,7 +1384,9 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut
+  initializeAuth, browserLocalPersistence, browserSessionPersistence,
+  browserPopupRedirectResolver, onAuthStateChanged,
+  signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   initializeFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
@@ -1393,11 +1402,15 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
+const auth = initializeAuth(firebaseApp, {
+  persistence: [browserLocalPersistence, browserSessionPersistence],
+  popupRedirectResolver: browserPopupRedirectResolver
+});
 const db = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true
 });
 const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({prompt:"select_account"});
 
 (function(){
   "use strict";
@@ -1631,57 +1644,62 @@ const googleProvider = new GoogleAuthProvider();
       card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
     }
 
-    card.appendChild(el('button',{
-      class:'google-login-btn'+(state.authBusy?' busy':''),
-      disabled:state.authBusy,
-      onclick:async(event)=>{
+    const googleButton = el('button',{
+      class:'google-login-btn',
+      type:'button',
+      onclick:async()=>{
         if(state.authBusy) return;
 
-        if(location.protocol === 'file:'){
-          state.authError = "Google sign-in needs the app to run from localhost or a hosted HTTPS address.";
-          render();
-          return;
-        }
-
-        state.authBusy=true;
-        state.authError=null;
-
-        // Do not re-render before opening the authentication window.
-        // Replacing the clicked DOM node here can make OAuth interactions
-        // appear unresponsive in some browsers.
-        const button = event.currentTarget;
-        button.disabled = true;
-        button.classList.add("busy");
-        const label = button.querySelector(".google-login-label");
-        if(label) label.textContent = "Opening Google…";
+        // Synchronous visual feedback proves the click handler fired.
+        state.authBusy = true;
+        state.authError = null;
+        googleButton.disabled = true;
+        googleButton.classList.add('busy');
+        googleButton.querySelector('.google-login-label').textContent = 'Opening Google…';
 
         try{
-          await signInWithPopup(auth, googleProvider);
-          // onAuthStateChanged will render the calendar.
-        }catch(err){
-          console.error("Google popup sign-in:", err);
+          const result = await signInWithPopup(
+            auth,
+            googleProvider,
+            browserPopupRedirectResolver
+          );
 
-          // If the browser blocks the popup, automatically switch to
-          // Firebase's full-page redirect flow.
-          if(err?.code === "auth/popup-blocked"){
+          // Firebase has authenticated the Google account.
+          state.authBusy = false;
+          state.authError = null;
+
+          if(result?.user){
+            render();
+          }
+        }catch(error){
+          console.error('Google authentication error:', error);
+
+          // If a browser blocks the popup, use redirect authentication.
+          if(error?.code === 'auth/popup-blocked'){
             try{
-              await signInWithRedirect(auth, googleProvider);
+              await signInWithRedirect(
+                auth,
+                googleProvider,
+                browserPopupRedirectResolver
+              );
               return;
-            }catch(redirectErr){
-              console.error("Google redirect sign-in:", redirectErr);
-              err = redirectErr;
+            }catch(redirectError){
+              console.error('Google redirect authentication error:', redirectError);
+              error = redirectError;
             }
           }
 
-          state.authBusy=false;
-          state.authError=friendlyAuthError(err);
+          state.authBusy = false;
+          state.authError = friendlyAuthError(error);
           render();
         }
       }
     },[
       el('span',{class:'google-icon'},[txt('G')]),
-      el('span',{class:'google-login-label'},[txt(state.authBusy?'Connecting to Google…':'Continue with Google')])
-    ]));
+      el('span',{class:'google-login-label'},[txt('Continue with Google')])
+    ]);
+
+    card.appendChild(googleButton);
 
     card.appendChild(el('div',{class:'auth-helper'},[
       txt('Use your Google Account · No password required')
@@ -2221,17 +2239,35 @@ const googleProvider = new GoogleAuthProvider();
 
 
   // Firebase authentication controls access to the calendar.
-  // Complete a pending Firebase redirect login after returning from Google.
+  // Complete a Google redirect sign-in when the browser returns to this page.
   (async()=>{
     try{
       await getRedirectResult(auth);
     }catch(err){
-      console.error("Google redirect result:", err);
+      console.error("Google redirect sign-in failed:", err);
       state.authBusy=false;
       state.authError=friendlyAuthError(err);
       render();
     }
   })();
+
+  window.addEventListener('error',(event)=>{
+    console.error('Calendar runtime error:',event.error || event.message);
+    if(!auth.currentUser && state){
+      state.authBusy=false;
+      state.authError='The login script encountered an error. Please refresh the page and try again.';
+      render();
+    }
+  });
+
+  window.addEventListener('unhandledrejection',(event)=>{
+    console.error('Calendar unhandled promise rejection:',event.reason);
+    if(!auth.currentUser && state){
+      state.authBusy=false;
+      state.authError=friendlyAuthError(event.reason);
+      render();
+    }
+  });
 
   onAuthStateChanged(auth, async (user)=>{
     state.modalOpen = false;
