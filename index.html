@@ -418,6 +418,99 @@
     to{transform:scale(3.4);opacity:0}
   }
 
+
+  /* ---------- V2 visual direction: warm Dribbble + Lottie-inspired motion ---------- */
+  :root{
+    --bg:#F6D3B4; --bg-panel:#F9E8D6; --bg-panel-2:#F3C49C;
+    --ink:#2F1508; --ink-soft:#70452F; --ink-faint:#A8785D;
+    --line:#D9B294; --line-soft:#E9CDB6; --amber:#E8A02D; --amber-ink:#7D430C;
+    --shadow:0 2px 5px rgba(47,21,8,.08),0 12px 34px rgba(47,21,8,.08);
+    --shadow-lg:0 18px 60px rgba(47,21,8,.20); --white:#FFF9F2;
+  }
+  body{background:radial-gradient(circle at 82% 4%,rgba(255,255,255,.28),transparent 24%),linear-gradient(135deg,#F8D7B9 0%,#F6D3B4 52%,#F2C99F 100%);color:var(--ink);}
+  .sidebar{background:rgba(249,232,214,.78);border-right:1px solid rgba(47,21,8,.12);backdrop-filter:blur(14px);}
+  .brand .mark{background:var(--ink);color:#F9E8D6;box-shadow:0 8px 18px rgba(47,21,8,.15);}
+  .new-btn{background:var(--ink);color:#FFF9F2;border-radius:12px;box-shadow:0 9px 20px rgba(47,21,8,.16);}
+  .new-btn:hover{background:#4A210D;box-shadow:0 12px 26px rgba(47,21,8,.2);}
+  .icon-btn:hover{background:rgba(47,21,8,.07);color:var(--ink);}
+  .canvas{padding-top:14px;}
+  .month-grid,.day-grid{border-color:rgba(47,21,8,.14);box-shadow:0 12px 35px rgba(47,21,8,.07);}
+  .month-dow{background:rgba(249,232,214,.86);border-color:rgba(47,21,8,.13);color:var(--ink-faint);}
+  .month-cell{background:rgba(255,249,242,.68);border-color:rgba(47,21,8,.13);}
+  .month-cell.other-month{background:rgba(255,249,242,.42);}
+  .month-cell:hover{background:rgba(255,250,245,.95);}
+  .date-num.today{color:var(--amber-ink);}
+  .date-num.today::before{border-color:#E8A02D;}
+  .view-toggle{background:rgba(249,232,214,.8);box-shadow:inset 0 0 0 1px rgba(47,21,8,.07);}
+  .view-toggle button.active{background:#FFF9F2;color:var(--ink);}
+  .topbar .today-btn{border-color:rgba(47,21,8,.18);color:var(--ink-soft);}
+  .day-grid{background:#FFF9F2;}
+  .hour-label{background:#F9E8D6;border-color:rgba(47,21,8,.12);}
+  .hour-row{border-color:#E9D4C0;}
+  .hour-slot{border-left-color:rgba(47,21,8,.10);}
+  .hour-slot:hover{background-color:#FFF3E6;}
+  .modal{background:#FFF9F2;border:1px solid rgba(47,21,8,.10);}
+  .overlay{background:rgba(47,21,8,.35);}
+  .field input[type=text],.field textarea,.field input[type=date],.field input[type=time],.auth-field input{background:#FFF5EA;border-color:#D9B89C;}
+  .cat-opt{background:#FFF5EA;border-color:#D9B89C;}
+  .cat-opt.selected{background:#F7DFC6;border-color:var(--ink);}
+  .btn-primary,.auth-primary{background:var(--ink);}
+  .btn-primary:hover,.auth-primary:hover{background:#4A210D;}
+
+  .new-event-icon{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;border-radius:7px;background:rgba(255,255,255,.12);font-size:17px;transition:transform .35s var(--ease-spring),background .2s ease;}
+  .new-btn:hover .new-event-icon{transform:rotate(90deg) scale(1.08);background:rgba(255,255,255,.2);}
+
+  /* Warm, rounded hero card inspired by the referenced calendar artwork. */
+  .day-spotlight{
+    position:relative;min-height:188px;margin:0 30px 0;border:2px solid var(--ink);
+    border-radius:24px;overflow:hidden;background:#FBE8D5;box-shadow:0 14px 34px rgba(47,21,8,.12);
+    display:grid;grid-template-columns:minmax(220px,.72fr) minmax(360px,1.28fr);isolation:isolate;
+    animation:spotlightIn .72s var(--ease-spring) both;
+  }
+  .spotlight-copy{position:relative;z-index:4;padding:22px 20px 18px 24px;display:flex;flex-direction:column;justify-content:center;}
+  .spotlight-nav{display:flex;gap:8px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:9px;}
+  .spotlight-kicker{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px;}
+  .spotlight-weekday{font-size:13px;color:var(--ink-soft);}
+  .spotlight-date{font-family:'Fraunces',serif;font-size:50px;line-height:.88;font-weight:700;letter-spacing:-.045em;color:var(--ink);margin:5px 0;}
+  .spotlight-month{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);letter-spacing:.12em;text-transform:uppercase;}
+  .spotlight-events{display:flex;flex-wrap:wrap;gap:5px 9px;margin-top:13px;max-width:440px;}
+  .spotlight-event{font-size:10px;color:var(--ink-soft);display:flex;align-items:center;gap:5px;animation:spotEventIn .42s var(--ease-spring) both;}
+  .spotlight-event::before{content:"";width:6px;height:6px;border-radius:50%;background:#E8A02D;flex:0 0 auto;}
+
+  .spotlight-scene{position:relative;min-height:188px;overflow:hidden;background:linear-gradient(180deg,#F26A70 0%,#F48A54 28%,#F6B62D 63%,#E5A24C 100%);}
+  .spotlight-scene::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 48% 50%,rgba(255,246,150,.88) 0 11%,rgba(255,229,92,.46) 12%,transparent 24%);mix-blend-mode:screen;animation:sceneGlow 4.5s ease-in-out infinite;}
+  .sun{position:absolute;width:72px;height:72px;border-radius:50%;left:42%;top:28%;background:#FFF06B;box-shadow:0 0 28px rgba(255,242,108,.65),0 0 70px rgba(255,226,82,.35);animation:sunFloat 4.8s ease-in-out infinite;}
+  .cloud{position:absolute;width:92px;height:24px;border-radius:20px;background:rgba(255,255,255,.9);filter:drop-shadow(0 5px 5px rgba(124,67,12,.08));animation:cloudDrift 8s ease-in-out infinite;}
+  .cloud::before,.cloud::after{content:"";position:absolute;border-radius:50%;background:inherit;}
+  .cloud::before{width:34px;height:34px;left:15px;top:-15px}.cloud::after{width:27px;height:27px;left:43px;top:-10px}
+  .cloud.one{left:8%;top:23%;transform:scale(.74)}.cloud.two{right:7%;top:13%;transform:scale(.5);animation-delay:-3.2s}
+  .hill{position:absolute;left:-10%;right:-10%;bottom:-58px;height:120px;border-radius:50% 50% 0 0;background:#B76C1E;transform:rotate(-3deg);animation:hillParallax 6s ease-in-out infinite;}
+  .hill.back{bottom:-40px;background:#D58B2B;transform:rotate(4deg) scale(1.06);animation-delay:-1.7s}
+  .hill.front{bottom:-74px;background:#8D5215;transform:rotate(-7deg) scale(1.12);animation-delay:-3s}
+  .tree{position:absolute;bottom:42px;width:10px;height:48px;background:#5D350D;border-radius:8px 8px 2px 2px;transform-origin:bottom center;animation:treeSway 3.8s ease-in-out infinite;}
+  .tree::before{content:"";position:absolute;width:22px;height:30px;left:-6px;top:-17px;background:#5D350D;border-radius:50% 50% 40% 40%}
+  .tree.a{left:27%;transform:scale(.75)}.tree.b{left:63%;transform:scale(1.1);animation-delay:-1.2s}.tree.c{left:77%;transform:scale(.62);animation-delay:-2.3s}
+  .scene-caption{position:absolute;z-index:5;right:18px;top:18px;color:#FFF8E8;text-align:right;text-shadow:0 2px 10px rgba(75,33,5,.18);}
+  .scene-temp{font-family:'Fraunces',serif;font-size:38px;font-weight:600;line-height:1}.scene-temp span{font-size:18px;vertical-align:top;margin-left:2px}
+  .scene-meta{margin-top:5px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;}
+  .spotlight-weather-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFF06B;margin-right:5px;animation:weatherDot 1.7s ease-in-out infinite;}
+
+  .day-spotlight.motion-next{animation-name:spotlightNext}.day-spotlight.motion-prev{animation-name:spotlightPrev}.day-spotlight.motion-today{animation-name:spotlightToday}
+  @keyframes spotlightIn{from{opacity:0;transform:translateY(20px) scale(.985)}70%{opacity:1;transform:translateY(-3px) scale(1.005)}to{transform:none}}
+  @keyframes spotlightNext{from{opacity:0;transform:translateX(38px) scale(.985)}65%{opacity:1;transform:translateX(-3px) scale(1.004)}to{transform:none}}
+  @keyframes spotlightPrev{from{opacity:0;transform:translateX(-38px) scale(.985)}65%{opacity:1;transform:translateX(3px) scale(1.004)}to{transform:none}}
+  @keyframes spotlightToday{from{opacity:0;transform:scale(.94) rotateX(3deg)}65%{opacity:1;transform:scale(1.012)}to{transform:none}}
+  @keyframes spotEventIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  @keyframes sceneGlow{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:1}}
+  @keyframes sunFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.045)}}
+  @keyframes cloudDrift{0%,100%{margin-left:0}50%{margin-left:18px}}
+  @keyframes hillParallax{0%,100%{transform:translateX(0) rotate(-3deg)}50%{transform:translateX(12px) rotate(-1deg)}}
+  @keyframes treeSway{0%,100%{margin-left:0;transform:rotate(-1deg)}50%{margin-left:2px;transform:rotate(2deg)}}
+  @keyframes weatherDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.72}}
+
+  @media (max-width:900px){.day-spotlight{grid-template-columns:1fr;min-height:310px;margin:0 18px}.spotlight-scene{min-height:170px}}
+  @media (max-width:560px){.day-spotlight{border-radius:18px;margin:0 10px}.spotlight-date{font-size:42px}.spotlight-copy{padding:18px}.spotlight-scene{min-height:155px}.scene-temp{font-size:31px}}
+
   @media (prefers-reduced-motion: reduce){
     .month-cell,.chip,.upcoming-item,.day-event,.modal,.auth-card,.sidebar,.main{
       animation:none !important;
@@ -1234,7 +1327,7 @@ const googleProvider = new GoogleAuthProvider();
 
     // new event
     sb.appendChild(el('button',{class:'new-btn', type:'button', onclick:()=>openModal(null, state.selectedDay)},[
-      el('span',{},[txt('+')]), el('span',{},[txt('New event')])
+      el('span',{class:'new-event-icon'},[txt('+')]), el('span',{},[txt('New event')])
     ]));
 
     // mini month
@@ -1328,9 +1421,56 @@ const googleProvider = new GoogleAuthProvider();
     return wrap;
   }
 
+
+  function renderDaySpotlight(){
+    const d = state.selectedDay || new Date();
+    const dayEvents = eventsOn(dateKey(d)).slice(0,4);
+    const weather = [
+      {temp:"28°", meta:"DAY 28° · NIGHT 14°", desc:"PARTLY CLOUDY"},
+      {temp:"27°", meta:"DAY 27° · NIGHT 15°", desc:"SUNNY"},
+      {temp:"29°", meta:"DAY 29° · NIGHT 16°", desc:"CLEAR SKY"},
+      {temp:"26°", meta:"DAY 26° · NIGHT 13°", desc:"SOFT CLOUDS"}
+    ][(d.getDate()+d.getMonth())%4];
+
+    const card = el('section',{class:'day-spotlight','aria-label':'Selected day spotlight'});
+    card.classList.add(state.motion==='next'?'motion-next':state.motion==='prev'?'motion-prev':'motion-today');
+
+    const copy = el('div',{class:'spotlight-copy'},[
+      el('div',{class:'spotlight-nav'},[
+        txt(state.view==='month'?'CALENDAR · MONTH':'CALENDAR · DAY'),txt('·'),txt('SELECTED DATE')
+      ]),
+      el('div',{class:'spotlight-kicker'},[txt('Your day')]),
+      el('div',{class:'spotlight-weekday'},[txt(d.toLocaleDateString(undefined,{weekday:'long'}))]),
+      el('div',{class:'spotlight-date'},[txt(String(d.getDate()))]),
+      el('div',{class:'spotlight-month'},[txt(d.toLocaleDateString(undefined,{month:'long',year:'numeric'}))])
+    ]);
+
+    const eventWrap = el('div',{class:'spotlight-events'});
+    if(dayEvents.length){
+      dayEvents.forEach((ev,i)=>eventWrap.appendChild(el('div',{class:'spotlight-event',style:`animation-delay:${.18+i*.06}s`},[txt(ev.title)])));
+    }else{
+      eventWrap.appendChild(el('div',{class:'spotlight-event'},[txt('No events scheduled')]));
+    }
+    copy.appendChild(eventWrap);
+
+    const scene = el('div',{class:'spotlight-scene'},[
+      el('div',{class:'cloud one'}),el('div',{class:'cloud two'}),el('div',{class:'sun'}),
+      el('div',{class:'hill back'}),el('div',{class:'hill'}),el('div',{class:'hill front'}),
+      el('div',{class:'tree a'}),el('div',{class:'tree b'}),el('div',{class:'tree c'}),
+      el('div',{class:'scene-caption'},[
+        el('div',{class:'scene-temp'},[txt(weather.temp),el('span',{},[txt('C')])]),
+        el('div',{class:'scene-meta'},[el('span',{class:'spotlight-weather-dot'}),txt(weather.desc),el('br'),txt(weather.meta)])
+      ])
+    ]);
+
+    card.appendChild(copy); card.appendChild(scene);
+    return card;
+  }
+
   function renderMain(){
     const main = el('div',{class:'main'});
     main.appendChild(renderTopbar());
+    main.appendChild(renderDaySpotlight());
     const canvas = el('div',{class:'canvas'});
     if(!state.loaded){
       canvas.appendChild(el('div',{class:'empty-state'},[txt('Loading your calendar…')]));
