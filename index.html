@@ -513,7 +513,8 @@
 
   @media (prefers-reduced-motion: reduce){
     .month-cell,.chip,.upcoming-item,.day-event,.modal,.auth-card,.sidebar,.main,
-    .auth-visual,.auth-visual-copy,.auth-brand,.login-calendar-card,.login-note,.login-cal-grid i{
+    .auth-visual,.auth-visual-copy,.auth-brand,.login-calendar-card,.login-note,.login-cal-grid i,
+    .auth-visual::before{
       animation:none !important;
     }
   }
@@ -958,59 +959,63 @@
   .err{ color:#A6432F; font-size:11.5px; margin-top:-8px; margin-bottom:12px; }
 
 
-  /* ---------- Google-only Dashboard Login ---------- */
+  /* ---------- Almanac Login — supplied hero design ---------- */
   .app.auth-app{
     display:block !important;
     width:100vw;
     min-height:100vh;
+    margin:0;
+    padding:0;
   }
 
   .auth-shell{
     min-height:100vh;
     width:100%;
     display:grid;
-    grid-template-columns:minmax(0,1.15fr) minmax(420px,.85fr);
-    background:#F7F1E8;
+    grid-template-columns:minmax(0,1.48fr) minmax(360px,.52fr);
+    background:#FFF8ED;
     overflow:hidden;
     position:relative;
-    grid-column:1 / -1;
   }
 
   .auth-visual{
-    position:relative;
     min-height:100vh;
+    position:relative;
     overflow:hidden;
-    padding:48px;
+    padding:52px 58px;
     display:flex;
     flex-direction:column;
-    justify-content:space-between;
+    justify-content:flex-start;
     background:
-      radial-gradient(circle at 75% 20%,rgba(255,236,160,.9) 0 8%,transparent 9%),
-      linear-gradient(145deg,#F4B44B 0%,#EE8B5C 48%,#D85D66 100%);
+      radial-gradient(circle at 75% 18%,rgba(255,243,165,.96) 0 5%,rgba(255,243,165,.18) 5.4%,transparent 12%),
+      linear-gradient(145deg,#F7B64E 0%,#F18A5B 47%,#D85C67 100%);
     color:#FFF8ED;
+    isolation:isolate;
   }
 
   .auth-visual::before{
     content:"";
     position:absolute;
-    inset:-25%;
+    inset:0;
+    z-index:0;
     background:
-      radial-gradient(circle at 65% 30%,rgba(255,255,255,.2),transparent 16%),
-      radial-gradient(circle at 35% 70%,rgba(255,255,255,.1),transparent 20%);
+      radial-gradient(circle at 79% 21%,rgba(255,247,195,.45),transparent 10%),
+      radial-gradient(circle at 30% 82%,rgba(255,203,92,.18),transparent 22%);
     animation:loginAura 8s ease-in-out infinite;
+    pointer-events:none;
   }
 
   .auth-brand{
     position:relative;
-    z-index:5;
+    z-index:10;
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:13px;
     animation:loginBrandIn .7s var(--ease-spring) both;
   }
 
   .auth-brand .mark{
-    width:38px;height:38px;
+    width:39px;height:39px;
     border-radius:11px;
     background:#2F1508;
     color:#FFF8ED;
@@ -1019,87 +1024,87 @@
     justify-content:center;
     font-family:'Fraunces',serif;
     font-weight:700;
-    box-shadow:0 12px 28px rgba(68,27,5,.18);
+    box-shadow:0 10px 22px rgba(65,25,5,.2);
   }
 
   .auth-brand h1{
     font-family:'Fraunces',serif;
-    font-size:23px;
+    font-size:24px;
+    line-height:1;
     margin:0;
     font-weight:700;
+    color:#FFF8ED;
   }
 
   .auth-sub{
     font-family:'IBM Plex Mono',monospace;
     font-size:8px;
     letter-spacing:.12em;
-    opacity:.72;
-    margin-top:2px;
+    opacity:.82;
+    margin-top:4px;
   }
 
   .auth-visual-copy{
     position:relative;
-    z-index:5;
-    max-width:570px;
+    z-index:10;
+    width:min(610px,55vw);
+    margin-top:clamp(105px,16vh,185px);
     animation:loginCopyIn .8s .1s var(--ease-spring) both;
   }
 
   .auth-kicker{
     font-family:'IBM Plex Mono',monospace;
     font-size:9px;
-    letter-spacing:.14em;
+    letter-spacing:.15em;
     text-transform:uppercase;
-    opacity:.78;
-    margin-bottom:13px;
+    opacity:.88;
+    margin-bottom:17px;
   }
 
   .auth-visual-copy h2{
     font-family:'Fraunces',serif;
-    font-size:clamp(48px,6vw,82px);
-    line-height:.9;
+    font-size:clamp(54px,5.1vw,80px);
+    line-height:.91;
     letter-spacing:-.055em;
-    margin:0 0 18px;
-    max-width:650px;
+    margin:0;
+    max-width:620px;
+    color:#2F1508;
   }
 
   .auth-visual-copy p{
-    max-width:430px;
+    max-width:500px;
     font-size:13px;
-    line-height:1.7;
-    opacity:.84;
-    margin:0;
+    line-height:1.6;
+    color:#3F1D0D;
+    opacity:.88;
+    margin:24px 0 0;
   }
 
   .auth-scene{
     position:absolute;
-    z-index:2;
-    left:18%;
-    right:-8%;
-    bottom:5%;
-    height:46%;
-    min-height:240px;
+    z-index:5;
+    inset:0;
     pointer-events:none;
   }
 
   .login-calendar-card{
     position:absolute;
-    right:11%;
-    top:4%;
-    width:min(390px,48%);
-    height:70%;
-    min-height:205px;
+    right:8%;
+    top:48%;
+    width:min(385px,35vw);
+    height:275px;
     background:#FFF8ED;
     border:2px solid #2F1508;
-    border-radius:26px;
+    border-radius:25px;
     transform:rotate(5deg);
-    box-shadow:0 30px 60px rgba(73,29,8,.22);
+    box-shadow:0 28px 55px rgba(73,29,8,.22);
     animation:calendarFloat 5s ease-in-out infinite;
   }
 
   .login-calendar-card::before{
     content:"";
     position:absolute;
-    left:22px;right:22px;top:22px;
+    left:22px;right:22px;top:21px;
     height:4px;
     border-radius:4px;
     background:#2F1508;
@@ -1108,7 +1113,7 @@
 
   .login-cal-title{
     position:absolute;
-    left:25px;top:38px;
+    left:24px;top:39px;
     font-family:'Fraunces',serif;
     font-size:24px;
     color:#2F1508;
@@ -1116,7 +1121,7 @@
 
   .login-cal-month{
     position:absolute;
-    right:25px;top:40px;
+    right:24px;top:43px;
     font-family:'IBM Plex Mono',monospace;
     font-size:8px;
     color:#9B6D50;
@@ -1125,16 +1130,16 @@
 
   .login-cal-grid{
     position:absolute;
-    left:23px;right:23px;top:83px;bottom:20px;
+    left:23px;right:23px;top:85px;bottom:22px;
     display:grid;
     grid-template-columns:repeat(7,1fr);
-    gap:7px;
+    gap:8px;
   }
 
   .login-cal-grid i{
     border-radius:6px;
     background:#F1DFCE;
-    min-height:17px;
+    min-height:20px;
     animation:calendarDotIn .5s var(--ease-spring) both;
   }
   .login-cal-grid i:nth-child(3n){background:#E8A02D}
@@ -1143,8 +1148,8 @@
 
   .login-note{
     position:absolute;
-    left:5%;
-    bottom:0;
+    left:39%;
+    bottom:4%;
     width:220px;
     padding:18px;
     background:#2F1508;
@@ -1168,12 +1173,14 @@
     margin-top:7px;
     font-family:'Fraunces',serif;
     font-size:21px;
+    line-height:1;
   }
 
   .login-note span{
     display:block;
-    margin-top:5px;
+    margin-top:7px;
     font-size:9px;
+    line-height:1.4;
     opacity:.7;
   }
 
@@ -1183,9 +1190,9 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:38px clamp(26px,5vw,80px);
+    padding:40px 42px;
     position:relative;
-    z-index:10;
+    z-index:20;
   }
 
   .auth-card{
@@ -1198,23 +1205,21 @@
     animation:authCardIn .7s .12s var(--ease-spring) both;
   }
 
-  .auth-card .auth-brand{display:none;}
-
   .auth-title{
     font-family:'Fraunces',serif;
-    font-size:39px;
+    font-size:42px;
     line-height:1;
     letter-spacing:-.045em;
     color:#2F1508;
-    margin:0 0 9px;
+    margin:0 0 10px;
   }
 
   .auth-copy{
     font-size:12px;
     line-height:1.65;
     color:#8B624C;
-    margin:0 0 27px;
-    max-width:310px;
+    margin:0 0 28px;
+    max-width:320px;
   }
 
   .auth-error{
@@ -1228,23 +1233,9 @@
     animation:errorShake .42s ease both;
   }
 
-
-  .auth-runtime-error{
-    margin-top:14px;
-    padding:10px 12px;
-    border-radius:10px;
-    background:#FCEDEA;
-    border:1px solid #EBC9C1;
-    color:#8D3D2E;
-    font-size:10px;
-    line-height:1.5;
-    word-break:break-word;
-  }
-
   .google-login-btn{
     width:100%;
     min-height:56px;
-    width:100%;
     box-sizing:border-box;
     display:flex;
     align-items:center;
@@ -1272,6 +1263,7 @@
   }
 
   .google-login-btn:active{transform:translateY(0) scale(.985);}
+  .google-login-btn.busy{cursor:wait;opacity:.92;}
 
   .google-icon{
     width:22px;height:22px;
@@ -1287,8 +1279,16 @@
     flex:0 0 auto;
   }
 
-  .google-login-btn.busy .google-icon{
-    animation:googleSpin .8s linear infinite;
+  .google-login-btn.busy .google-icon{animation:googleSpin .8s linear infinite;}
+
+  .google-login-label{
+    display:inline-block;
+    min-width:150px;
+    text-align:left;
+  }
+
+  .google-login-btn.busy .google-login-label{
+    animation:loginTextPulse 1.2s ease-in-out infinite;
   }
 
   .auth-helper{
@@ -1328,25 +1328,41 @@
   @keyframes calendarDotIn{from{opacity:0;transform:scale(.4) rotate(-10deg)}to{opacity:1;transform:none}}
   @keyframes errorShake{0%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}100%{transform:none}}
   @keyframes googleSpin{to{transform:rotate(360deg)}}
+  @keyframes loginTextPulse{0%,100%{opacity:.72}50%{opacity:1}}
 
-  @media(max-width:900px){
+  @media(max-width:1050px){
+    .auth-shell{grid-template-columns:minmax(0,1.35fr) minmax(330px,.65fr);}
+    .auth-visual{padding-left:38px;padding-right:38px;}
+    .login-calendar-card{right:5%;width:330px;}
+    .auth-visual-copy{width:60vw;}
+    .auth-visual-copy h2{font-size:clamp(50px,5.5vw,70px);}
+  }
+
+  @media(max-width:800px){
     .auth-shell{grid-template-columns:1fr;}
-    .auth-visual{min-height:43vh;padding:28px 28px 22px;}
-    .auth-visual-copy h2{font-size:48px;max-width:500px;}
-    .auth-scene{height:45%;left:30%;bottom:-3%;}
-    .login-calendar-card{width:300px;height:180px;}
-    .login-note{display:none;}
-    .auth-form-panel{min-height:57vh;padding:36px 24px 48px;}
+    .auth-visual{min-height:580px;padding:30px 28px;}
+    .auth-visual-copy{width:min(600px,90vw);margin-top:95px;}
+    .auth-visual-copy h2{font-size:54px;}
+    .login-calendar-card{top:51%;right:6%;width:330px;height:235px;}
+    .login-note{left:8%;bottom:4%;}
+    .auth-form-panel{min-height:430px;padding:42px 28px 52px;}
   }
 
   @media(max-width:520px){
-    .auth-visual{min-height:330px;padding:24px;}
-    .auth-visual-copy h2{font-size:42px;}
-    .auth-visual-copy p{font-size:11px;}
-    .auth-scene{left:14%;right:-30%;bottom:-4%;}
-    .login-calendar-card{right:0;width:270px;height:165px;}
-    .auth-form-panel{padding:34px 22px 44px;}
-    .auth-title{font-size:34px;}
+    .auth-visual{min-height:510px;padding:24px 20px;}
+    .auth-brand h1{font-size:21px;}
+    .auth-visual-copy{margin-top:72px;}
+    .auth-kicker{font-size:8px;margin-bottom:12px;}
+    .auth-visual-copy h2{font-size:43px;max-width:360px;}
+    .auth-visual-copy p{font-size:11px;margin-top:18px;max-width:330px;}
+    .login-calendar-card{top:57%;right:-2%;width:285px;height:190px;}
+    .login-cal-title{font-size:21px;top:31px;}
+    .login-cal-month{top:35px;}
+    .login-cal-grid{top:70px;gap:5px;}
+    .login-note{left:4%;bottom:3%;width:165px;padding:14px;}
+    .login-note strong{font-size:17px;}
+    .auth-form-panel{padding:36px 22px 45px;}
+    .auth-title{font-size:35px;}
   }
 
   .user-area{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px;}
