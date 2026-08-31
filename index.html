@@ -512,7 +512,8 @@
   @media (max-width:560px){.day-spotlight{border-radius:18px;margin:0 10px}.spotlight-date{font-size:42px}.spotlight-copy{padding:18px}.spotlight-scene{min-height:155px}.scene-temp{font-size:31px}}
 
   @media (prefers-reduced-motion: reduce){
-    .month-cell,.chip,.upcoming-item,.day-event,.modal,.auth-card,.sidebar,.main{
+    .month-cell,.chip,.upcoming-item,.day-event,.modal,.auth-card,.sidebar,.main,
+    .auth-visual,.auth-visual-copy,.auth-brand,.login-calendar-card,.login-note,.login-cal-grid i{
       animation:none !important;
     }
   }
@@ -957,45 +958,375 @@
   .err{ color:#A6432F; font-size:11.5px; margin-top:-8px; margin-bottom:12px; }
 
 
-  /* ---------- Firebase Authentication ---------- */
+  /* ---------- Google-only Dashboard Login ---------- */
   .auth-shell{
     min-height:100vh;
     width:100%;
+    display:grid;
+    grid-template-columns:minmax(0,1.15fr) minmax(420px,.85fr);
+    background:#F7F1E8;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .auth-visual{
+    position:relative;
+    min-height:100vh;
+    overflow:hidden;
+    padding:48px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    background:
+      radial-gradient(circle at 75% 20%,rgba(255,236,160,.9) 0 8%,transparent 9%),
+      linear-gradient(145deg,#F4B44B 0%,#EE8B5C 48%,#D85D66 100%);
+    color:#FFF8ED;
+  }
+
+  .auth-visual::before{
+    content:"";
+    position:absolute;
+    inset:-25%;
+    background:
+      radial-gradient(circle at 65% 30%,rgba(255,255,255,.2),transparent 16%),
+      radial-gradient(circle at 35% 70%,rgba(255,255,255,.1),transparent 20%);
+    animation:loginAura 8s ease-in-out infinite;
+  }
+
+  .auth-brand{
+    position:relative;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    animation:loginBrandIn .7s var(--ease-spring) both;
+  }
+
+  .auth-brand .mark{
+    width:38px;height:38px;
+    border-radius:11px;
+    background:#2F1508;
+    color:#FFF8ED;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:24px;
-    background:var(--bg);
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    box-shadow:0 12px 28px rgba(68,27,5,.18);
   }
+
+  .auth-brand h1{
+    font-family:'Fraunces',serif;
+    font-size:23px;
+    margin:0;
+    font-weight:700;
+  }
+
+  .auth-sub{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:8px;
+    letter-spacing:.12em;
+    opacity:.72;
+    margin-top:2px;
+  }
+
+  .auth-visual-copy{
+    position:relative;
+    z-index:5;
+    max-width:570px;
+    animation:loginCopyIn .8s .1s var(--ease-spring) both;
+  }
+
+  .auth-kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    opacity:.78;
+    margin-bottom:13px;
+  }
+
+  .auth-visual-copy h2{
+    font-family:'Fraunces',serif;
+    font-size:clamp(48px,6vw,82px);
+    line-height:.9;
+    letter-spacing:-.055em;
+    margin:0 0 18px;
+    max-width:650px;
+  }
+
+  .auth-visual-copy p{
+    max-width:430px;
+    font-size:13px;
+    line-height:1.7;
+    opacity:.84;
+    margin:0;
+  }
+
+  .auth-scene{
+    position:absolute;
+    z-index:2;
+    left:18%;
+    right:-8%;
+    bottom:5%;
+    height:46%;
+    min-height:240px;
+    pointer-events:none;
+  }
+
+  .login-calendar-card{
+    position:absolute;
+    right:11%;
+    top:4%;
+    width:min(390px,48%);
+    height:70%;
+    min-height:205px;
+    background:#FFF8ED;
+    border:2px solid #2F1508;
+    border-radius:26px;
+    transform:rotate(5deg);
+    box-shadow:0 30px 60px rgba(73,29,8,.22);
+    animation:calendarFloat 5s ease-in-out infinite;
+  }
+
+  .login-calendar-card::before{
+    content:"";
+    position:absolute;
+    left:22px;right:22px;top:22px;
+    height:4px;
+    border-radius:4px;
+    background:#2F1508;
+    opacity:.1;
+  }
+
+  .login-cal-title{
+    position:absolute;
+    left:25px;top:38px;
+    font-family:'Fraunces',serif;
+    font-size:24px;
+    color:#2F1508;
+  }
+
+  .login-cal-month{
+    position:absolute;
+    right:25px;top:40px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:8px;
+    color:#9B6D50;
+    text-transform:uppercase;
+  }
+
+  .login-cal-grid{
+    position:absolute;
+    left:23px;right:23px;top:83px;bottom:20px;
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:7px;
+  }
+
+  .login-cal-grid i{
+    border-radius:6px;
+    background:#F1DFCE;
+    min-height:17px;
+    animation:calendarDotIn .5s var(--ease-spring) both;
+  }
+  .login-cal-grid i:nth-child(3n){background:#E8A02D}
+  .login-cal-grid i:nth-child(5n){background:#D86A68}
+  .login-cal-grid i:nth-child(2n){opacity:.55}
+
+  .login-note{
+    position:absolute;
+    left:5%;
+    bottom:0;
+    width:220px;
+    padding:18px;
+    background:#2F1508;
+    color:#FFF8ED;
+    border-radius:18px;
+    transform:rotate(-7deg);
+    box-shadow:0 22px 35px rgba(47,21,8,.22);
+    animation:noteFloat 4.4s ease-in-out infinite;
+  }
+
+  .login-note .small{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:8px;
+    letter-spacing:.1em;
+    opacity:.65;
+    text-transform:uppercase;
+  }
+
+  .login-note strong{
+    display:block;
+    margin-top:7px;
+    font-family:'Fraunces',serif;
+    font-size:21px;
+  }
+
+  .login-note span{
+    display:block;
+    margin-top:5px;
+    font-size:9px;
+    opacity:.7;
+  }
+
+  .auth-form-panel{
+    min-height:100vh;
+    background:#FFF8ED;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:38px clamp(26px,5vw,80px);
+    position:relative;
+    z-index:10;
+  }
+
   .auth-card{
     width:100%;
-    max-width:410px;
-    margin:0 auto;
-    background:var(--white);
-    border:1px solid var(--line);
-    border-radius:14px;
-    box-shadow:var(--shadow-lg);
-    padding:30px;
+    max-width:390px;
+    background:transparent;
+    border:0;
+    box-shadow:none;
+    padding:0;
+    animation:authCardIn .7s .12s var(--ease-spring) both;
   }
-  .auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
-  .auth-brand .mark{font-family:'Fraunces',serif;font-weight:600;font-size:15px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;}
-  .auth-brand h1{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin:0;}
-  .auth-sub{font-size:12px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
-  .auth-title{font-family:'Fraunces',serif;font-size:24px;font-weight:600;margin:0 0 5px;}
-  .auth-copy{font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;}
-  .auth-field{margin-bottom:13px;}
-  .auth-field label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;}
-  .auth-field input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 11px;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);background:var(--bg);}
-  .auth-field input:focus{outline:2px solid var(--amber);outline-offset:0;border-color:transparent;}
-  .auth-primary{width:100%;background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:11px 14px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;}
-  .auth-primary:hover{background:#000;}
-  .auth-google{width:100%;background:var(--white);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;margin-top:10px;}
-  .auth-google:hover{background:var(--bg-panel);}
-  .auth-divider{display:flex;align-items:center;gap:10px;color:var(--ink-faint);font-size:10px;margin:16px 0;}
-  .auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line-soft);flex:1;}
-  .auth-switch{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:17px;}
-  .auth-link{background:none;border:none;color:var(--amber-ink);font-weight:700;cursor:pointer;padding:0;font:inherit;}
-  .auth-error{color:#A6432F;background:#FCEDEA;border:1px solid #EBC9C1;border-radius:7px;padding:9px 10px;font-size:11.5px;margin-bottom:12px;}
+
+  .auth-card .auth-brand{display:none;}
+
+  .auth-title{
+    font-family:'Fraunces',serif;
+    font-size:39px;
+    line-height:1;
+    letter-spacing:-.045em;
+    color:#2F1508;
+    margin:0 0 9px;
+  }
+
+  .auth-copy{
+    font-size:12px;
+    line-height:1.65;
+    color:#8B624C;
+    margin:0 0 27px;
+    max-width:310px;
+  }
+
+  .auth-error{
+    color:#A6432F;
+    background:#FCEDEA;
+    border:1px solid #EBC9C1;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:11px;
+    margin-bottom:14px;
+    animation:errorShake .42s ease both;
+  }
+
+  .google-login-btn{
+    width:100%;
+    min-height:56px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:11px;
+    background:#2F1508;
+    color:#FFF8ED;
+    border:0;
+    border-radius:14px;
+    padding:12px 18px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 12px 25px rgba(47,21,8,.16);
+    transition:transform .25s var(--ease-spring),box-shadow .25s ease,background .2s ease;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .google-login-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 17px 31px rgba(47,21,8,.2);
+    background:#47200D;
+  }
+
+  .google-login-btn:active{transform:translateY(0) scale(.985);}
+
+  .google-icon{
+    width:22px;height:22px;
+    border-radius:50%;
+    background:#FFF;
+    color:#4285F4;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:Arial,sans-serif;
+    font-weight:800;
+    font-size:15px;
+    flex:0 0 auto;
+  }
+
+  .google-login-btn.busy .google-icon{
+    animation:googleSpin .8s linear infinite;
+  }
+
+  .auth-helper{
+    margin-top:17px;
+    font-family:'IBM Plex Mono',monospace;
+    color:#A07861;
+    font-size:8.5px;
+    line-height:1.6;
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+
+  .auth-security{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:28px;
+    font-size:10px;
+    color:#A07861;
+  }
+
+  .auth-security::before{
+    content:"";
+    width:7px;height:7px;
+    border-radius:50%;
+    background:#67A36E;
+    box-shadow:0 0 0 4px #E7F0E4;
+  }
+
+  @keyframes loginAura{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(2%,3%) scale(1.06)}}
+  @keyframes loginBrandIn{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:none}}
+  @keyframes loginCopyIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  @keyframes calendarFloat{0%,100%{transform:rotate(5deg) translateY(0)}50%{transform:rotate(2.5deg) translateY(-11px)}}
+  @keyframes noteFloat{0%,100%{transform:rotate(-7deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-9px)}}
+  @keyframes calendarDotIn{from{opacity:0;transform:scale(.4) rotate(-10deg)}to{opacity:1;transform:none}}
+  @keyframes errorShake{0%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}100%{transform:none}}
+  @keyframes googleSpin{to{transform:rotate(360deg)}}
+
+  @media(max-width:900px){
+    .auth-shell{grid-template-columns:1fr;}
+    .auth-visual{min-height:43vh;padding:28px 28px 22px;}
+    .auth-visual-copy h2{font-size:48px;max-width:500px;}
+    .auth-scene{height:45%;left:30%;bottom:-3%;}
+    .login-calendar-card{width:300px;height:180px;}
+    .login-note{display:none;}
+    .auth-form-panel{min-height:57vh;padding:36px 24px 48px;}
+  }
+
+  @media(max-width:520px){
+    .auth-visual{min-height:330px;padding:24px;}
+    .auth-visual-copy h2{font-size:42px;}
+    .auth-visual-copy p{font-size:11px;}
+    .auth-scene{left:14%;right:-30%;bottom:-4%;}
+    .login-calendar-card{right:0;width:270px;height:165px;}
+    .auth-form-panel{padding:34px 22px 44px;}
+    .auth-title{font-size:34px;}
+  }
+
   .user-area{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px;}
   .user-email{font-size:10.5px;color:var(--ink-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;}
   .logout-btn{background:none;border:1px solid var(--line);border-radius:7px;color:var(--ink-soft);padding:5px 8px;font-size:10.5px;font-weight:600;cursor:pointer;}
@@ -1031,8 +1362,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut
+  getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   initializeFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
@@ -1091,8 +1421,7 @@ const googleProvider = new GoogleAuthProvider();
     editing:null,         // event being edited, or null for new
     modalOpen:false,
     modalDefaults:null,
-    authMode:"login",
-    authError:null,
+        authError:null,
     authBusy:false,
     toast:"",
     toastTimer:null,
@@ -1224,10 +1553,11 @@ const googleProvider = new GoogleAuthProvider();
   function friendlyAuthError(error){
     const code = error?.code || "";
     const messages = {
-      "auth/invalid-credential":"Email or password is incorrect.",
-      "auth/invalid-email":"Please enter a valid email address.",
-      "auth/email-already-in-use":"An account already exists with this email.",
-      "auth/weak-password":"Password should be at least 6 characters.",
+      "auth/invalid-credential":"Google could not verify this sign-in. Please try again.",
+      "auth/invalid-email":"Google returned an invalid account identity. Please try again.",
+      "auth/account-exists-with-different-credential":"This Google account is already linked to another sign-in method.",
+      "auth/operation-not-allowed":"Google sign-in is not enabled in your Firebase Authentication settings.",
+      "auth/network-request-failed":"Network error while contacting Google. Please check your connection.",
       "auth/popup-closed-by-user":"Google sign-in was cancelled. Please try again.",
       "auth/cancelled-popup-request":"A Google sign-in window was already in progress. Close any Google sign-in window and click the button once.",
       "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
@@ -1238,52 +1568,60 @@ const googleProvider = new GoogleAuthProvider();
 
   function renderAuth(){
     const shell = el('div',{class:'auth-shell'});
-    const card = el('div',{class:'auth-card'});
-    const isLogin = state.authMode==="login";
 
-    card.appendChild(el('div',{class:'auth-brand'},[
-      el('div',{class:'mark'},[txt('A')]),
-      el('div',{},[
-        el('h1',{},[txt('Almanac')]),
-        el('div',{class:'auth-sub'},[txt('CALENDAR · SCHEDULER')])
+    const visual = el('section',{class:'auth-visual'},[
+      el('div',{class:'auth-brand'},[
+        el('div',{class:'mark'},[txt('A')]),
+        el('div',{},[
+          el('h1',{},[txt('Almanac')]),
+          el('div',{class:'auth-sub'},[txt('CALENDAR · SCHEDULER')])
+        ])
+      ]),
+      el('div',{class:'auth-visual-copy'},[
+        el('div',{class:'auth-kicker'},[txt('YOUR TIME · YOUR SPACE')]),
+        el('h2',{},[txt('Make time for what matters.')]),
+        el('p',{},[txt('Plan your days, keep your events close, and let your calendar move with you.')])
       ])
+    ]);
+
+    const scene = el('div',{class:'auth-scene'});
+    const calGrid = el('div',{class:'login-cal-grid'});
+    for(let i=0;i<35;i++){
+      calGrid.appendChild(el('i',{style:`animation-delay:${Math.min(i*.018,.55)}s`}));
+    }
+    const cal = el('div',{class:'login-calendar-card'},[
+      el('div',{class:'login-cal-title'},[txt('August')]),
+      el('div',{class:'login-cal-month'},[txt('2026 · PLAN')]),
+      calGrid
+    ]);
+    scene.appendChild(cal);
+    scene.appendChild(el('div',{class:'login-note'},[
+      el('div',{class:'small'},[txt('TODAY · FOCUS')]),
+      el('strong',{},[txt('Your day, organized.')]),
+      el('span',{},[txt('One calm place for every plan.')])
     ]));
-    card.appendChild(el('h2',{class:'auth-title'},[txt(isLogin?'Welcome back':'Create your account')]));
-    card.appendChild(el('p',{class:'auth-copy'},[txt(isLogin?'Sign in to access your cloud calendar.':'Create a secure account for your cloud calendar.')]));
+    visual.appendChild(scene);
 
-    if(state.authError) card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
+    const panel = el('section',{class:'auth-form-panel'});
+    const card = el('div',{class:'auth-card'});
 
-    const email = el('input',{type:'email',id:'auth-email',placeholder:'you@example.com',autocomplete:'email'});
-    const password = el('input',{type:'password',id:'auth-password',placeholder:'Password',autocomplete:isLogin?'current-password':'new-password'});
-    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Email')]),email]));
-    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Password')]),password]));
+    card.appendChild(el('h2',{class:'auth-title'},[txt('Welcome back.')]));
+    card.appendChild(el('p',{class:'auth-copy'},[
+      txt('Sign in securely with your Google Account to access your cloud calendar.')
+    ]));
 
-    card.appendChild(el('button',{class:'auth-primary',onclick:async()=>{
-      const emailValue=email.value.trim(), passwordValue=password.value;
-      if(!emailValue || !passwordValue){state.authError="Enter your email and password.";render();return;}
-      try{
-        state.authError=null;
-        if(isLogin) await signInWithEmailAndPassword(auth,emailValue,passwordValue);
-        else await createUserWithEmailAndPassword(auth,emailValue,passwordValue);
-      }catch(err){
-        console.error(err);
-        state.authError=friendlyAuthError(err);
-        render();
-      }
-    }},[txt(isLogin?'Sign in':'Create account')]));
+    if(state.authError){
+      card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
+    }
 
-    card.appendChild(el('div',{class:'auth-divider'},[txt('OR')]));
     card.appendChild(el('button',{
-      class:'auth-google',
+      class:'google-login-btn'+(state.authBusy?' busy':''),
       disabled:state.authBusy,
-      style:state.authBusy?'opacity:.6;cursor:wait;':'',
       onclick:async()=>{
         if(state.authBusy) return;
 
-        // OAuth popups need a real web origin. Opening the downloaded HTML
-        // directly with file:// can cause Firebase to cancel the popup flow.
         if(location.protocol === 'file:'){
-          state.authError = "Google sign-in needs the app to run from http://localhost or a hosted HTTPS address. Email/password sign-in can still be tested here.";
+          state.authError = "Google sign-in needs the app to run from localhost or a hosted HTTPS address.";
           render();
           return;
         }
@@ -1300,18 +1638,25 @@ const googleProvider = new GoogleAuthProvider();
           render();
         }
       }
-    },[txt(state.authBusy?'Opening Google…':'Continue with Google')]));
-
-    card.appendChild(el('div',{class:'auth-switch'},[
-      txt(isLogin?"Don't have an account? ":"Already have an account? "),
-      el('button',{class:'auth-link',onclick:()=>{
-        state.authMode=isLogin?'register':'login';
-        state.authError=null;
-        render();
-      }},[txt(isLogin?'Create one':'Sign in')])
+    },[
+      el('span',{class:'google-icon'},[txt('G')]),
+      txt(state.authBusy?'Connecting to Google…':'Continue with Google')
     ]));
-    return shell.appendChild(card), shell;
+
+    card.appendChild(el('div',{class:'auth-helper'},[
+      txt('Use your Google Account · No password required')
+    ]));
+
+    card.appendChild(el('div',{class:'auth-security'},[
+      txt('SECURE FIREBASE AUTHENTICATION')
+    ]));
+
+    panel.appendChild(card);
+    shell.appendChild(visual);
+    shell.appendChild(panel);
+    return shell;
   }
+
 
   function renderSidebar(){
     const sb = el('div',{class:'sidebar'});
@@ -1347,7 +1692,7 @@ const googleProvider = new GoogleAuthProvider();
     sb.appendChild(renderUpcoming());
 
     sb.appendChild(el('div',{class:'user-area'},[
-      el('div',{class:'user-email',title:auth.currentUser?.email||""},[txt(auth.currentUser?.email||"Signed in")]),
+      el('div',{class:'user-email',title:auth.currentUser?.displayName||auth.currentUser?.email||""},[txt(auth.currentUser?.displayName||"Google account")]),
       el('button',{class:'logout-btn',onclick:async()=>{await signOut(auth);}},[txt('Sign out')])
     ]));
 
