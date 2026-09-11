@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Almanac — Calendar &amp; Scheduler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Noto+Serif+JP:wght@400;500;600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#FBFAF7;
@@ -1062,6 +1062,89 @@
 
   ::-webkit-scrollbar{ width:8px; height:8px; }
   ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
+
+  /* ---------- Almanac / Wa redesign: quiet Japanese editorial mode ---------- */
+  :root{
+    --bg:#F7F0E6;
+    --bg-panel:#F1E7D8;
+    --bg-panel-2:#E9DDCC;
+    --ink:#2F211A;
+    --ink-soft:#735F52;
+    --ink-faint:#A89586;
+    --line:#DCCBBB;
+    --line-soft:#E9DFD2;
+    --amber:#B96A35;
+    --amber-ink:#81401E;
+    --sage:#617363;
+    --sage-bg:#E2E7DF;
+    --navy:#4C5C66;
+    --navy-bg:#E3E6E6;
+    --plum:#725B69;
+    --plum-bg:#EAE2E5;
+    --white:#FFFDF9;
+  }
+  body{background:var(--bg);color:var(--ink);}
+  .sidebar{background:#F0E4D4;border-right:1px solid #D7C6B3;padding:22px 18px;gap:22px;}
+  .brand h1,.topbar h2,.spotlight-date,.day-drawer-title,.auth-brand h1,.auth-title{font-family:'Noto Serif JP','Fraunces',serif;}
+  .brand .sub{letter-spacing:.08em;}
+  .brand .sub::after{content:'  ·  静かな時間';font-family:'Noto Serif JP',serif;color:#8E7564;letter-spacing:.04em;}
+  .new-btn{border-radius:12px;background:#2F211A;box-shadow:0 7px 18px rgba(47,33,26,.12);}
+  .new-btn:hover{background:#452B1E;}
+  .topbar{padding:14px 30px 12px;border-bottom:1px solid #D8C7B5;background:rgba(247,240,230,.94);position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);}
+  .topbar h2{font-size:25px;letter-spacing:-.02em;}
+  .topbar .today-btn{border-radius:10px;background:#FBF6EE;}
+  .view-toggle{background:#E9DDCF;border-radius:11px;padding:3px;}
+  .view-toggle button{border-radius:8px;}
+  .view-toggle button.active{background:#FFFDF9;box-shadow:0 2px 7px rgba(47,33,26,.08);}
+  .canvas{padding:0 30px 28px;}
+  .day-spotlight{min-height:132px;height:132px;margin:0 0 18px;border:1px solid #4A3023;border-radius:0 0 18px 18px;box-shadow:0 10px 28px rgba(80,53,35,.10);grid-template-columns:minmax(250px,.62fr) minmax(360px,1.38fr);}
+  .spotlight-copy{padding:16px 20px;}
+  .spotlight-nav{margin-bottom:5px;}
+  .spotlight-weekday{font-size:12px;}
+  .spotlight-date{font-size:42px;margin:2px 0;}
+  .spotlight-month{font-size:9px;}
+  .spotlight-season{margin-top:5px;font:500 10px 'Noto Serif JP',serif;letter-spacing:.08em;color:#967968;}
+  .spotlight-events{margin-top:7px;gap:4px 8px;}
+  .spotlight-event{font-size:9.5px;}
+  .spotlight-scene{min-height:132px;}
+  .sun{width:60px;height:60px;}
+  .scene-caption{top:13px;right:15px;}
+  .scene-temp{font-size:31px;}
+  .scene-meta{font-size:7px;}
+  .month-grid{border-color:#D9C9B8;box-shadow:0 1px 0 rgba(47,33,26,.03);}
+  .month-dow{padding:9px 10px;background:#F1E7D8;border-color:#D9C9B8;color:#917D6C;}
+  .month-cell{min-height:104px;padding:9px 8px;border-color:#DFD1C2;background:#FBF6EE;}
+  .month-cell:hover{background:#FFFDF9;transform:none;box-shadow:inset 0 0 0 1px #D6BCA6;}
+  .month-cell.other-month{background:#F6EFE6;}
+  .date-num{font-family:'Noto Serif JP','Fraunces',serif;font-size:14px;}
+  .date-num.today::before{border-color:#B96A35;}
+  .chip{border-radius:3px;padding:4px 6px;font-size:10px;box-shadow:none!important;}
+  .cat-work{background:#E6E9E8;color:#4C5C66}.cat-personal{background:#E2E8DF;color:#617363}.cat-focus{background:#F3E4CF;color:#81401E}.cat-other{background:#EAE2E5;color:#725B69}
+  .month-cell .quick-add{background:#2F211A;border-radius:50%;width:24px;height:24px;}
+  .month-cell.drag-over{background:#F3E1CE!important;box-shadow:inset 0 0 0 1px #B96A35;}
+  .topbar-command{max-width:400px;}
+  .command-wrap input{height:36px;border-radius:18px;background:#FBF6EE;border-color:#D8C5B3;padding-left:35px;}
+  .command-wrap input:focus{border-color:#B96A35;box-shadow:0 0 0 3px rgba(185,106,53,.10);}
+  .command-hint{font-family:'Noto Serif JP',serif;letter-spacing:.03em;}
+  .day-drawer{right:18px;top:82px;background:#FBF6EE;border-color:#D7C4B1;border-radius:16px;box-shadow:0 20px 48px rgba(67,44,29,.18);}
+  .day-drawer-kicker{font-family:'Noto Serif JP',serif;letter-spacing:.08em;text-transform:none;}
+  .drawer-event{background:#F4E9DC;border-radius:6px;}
+  .drawer-pill{background:#EAE0D3;color:#6E5645;border-radius:4px;}
+  .drawer-actions button{border-radius:7px;}
+  .auth-shell{background:radial-gradient(circle at 80% 20%,#F3D9BE 0,transparent 32%),#F7F0E6;}
+  .auth-card{max-width:430px;background:#FBF6EE;border-color:#D8C7B5;border-radius:18px;box-shadow:0 24px 70px rgba(64,43,30,.16);}
+  .auth-brand .mark{background:#2F211A;}
+  .auth-title{font-size:27px;}
+  .auth-copy{line-height:1.6;}
+  .auth-field input{background:#FFFDF9;border-color:#D8C7B5;border-radius:10px;}
+  .auth-primary{background:#2F211A;border-radius:10px;}
+  .auth-primary:hover{background:#4A2D1F;}
+  .auth-google{background:#FFFDF9;border-color:#D8C7B5;border-radius:10px;}
+  .auth-environment-note{margin:-6px 0 16px;padding:10px 11px;border:1px solid #E1C6A7;border-radius:9px;background:#FBEDD9;color:#79553C;font-size:11px;line-height:1.5;}
+  .auth-environment-note strong{display:block;margin-bottom:2px;color:#5C3825;}
+  @media(max-width:900px){.day-spotlight{height:auto;min-height:260px;grid-template-columns:1fr}.spotlight-scene{min-height:130px}.canvas{padding:0 18px 24px;}}
+  @media(max-width:700px){.topbar{padding:12px 14px}.canvas{padding:0 10px 18px}.day-spotlight{margin-bottom:12px}.month-cell{min-height:82px}.command-hint{display:none}}
+
 </style>
 </head>
 <body>
@@ -1072,7 +1155,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut
+  createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut,
+  setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   initializeFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
@@ -1089,6 +1173,10 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
+const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch((error)=>{
+  console.warn('Firebase Auth persistence could not be enabled:', error);
+  return null;
+});
 const db = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true
 });
@@ -1274,7 +1362,15 @@ const googleProvider = new GoogleAuthProvider();
       "auth/popup-closed-by-user":"Google sign-in was cancelled. Please try again.",
       "auth/cancelled-popup-request":"A Google sign-in window was already in progress. Close any Google sign-in window and click the button once.",
       "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
-      "auth/too-many-requests":"Too many attempts. Please try again later."
+      "auth/too-many-requests":"Too many attempts. Please try again later.",
+      "auth/operation-not-allowed":"Email/password sign-in is not enabled in this Firebase project. Enable it under Firebase Console → Authentication → Sign-in method.",
+      "auth/network-request-failed":"Firebase could not reach the authentication service. Check your Internet connection, VPN, firewall, or browser extensions.",
+      "auth/invalid-api-key":"The Firebase API key is invalid. Check the Firebase configuration.",
+      "auth/app-not-authorized":"This app origin is not authorized by Firebase. Add localhost to Firebase Authentication → Settings → Authorized domains.",
+      "auth/unauthorized-domain":"This website is not authorized for Firebase Authentication. Add its domain under Firebase Authentication → Settings → Authorized domains.",
+      "auth/user-disabled":"This account has been disabled in Firebase Authentication.",
+      "auth/user-not-found":"No account exists for this email address.",
+      "auth/wrong-password":"Email or password is incorrect."
     };
     return messages[code] || error?.message || "Authentication failed.";
   }
@@ -1293,6 +1389,10 @@ const googleProvider = new GoogleAuthProvider();
     ]));
     card.appendChild(el('h2',{class:'auth-title'},[txt(isLogin?'Welcome back':'Create your account')]));
     card.appendChild(el('p',{class:'auth-copy'},[txt(isLogin?'Sign in to access your cloud calendar.':'Create a secure account for your cloud calendar.')]));
+    if(location.protocol==='file:') card.appendChild(el('div',{class:'auth-environment-note'},[
+      el('strong',{},[txt('Local preview detected')]),
+      txt(' Firebase Authentication works reliably when Almanac is opened from http://localhost rather than directly as a file. Use the included run-almanac.bat file to start it.')
+    ]));
 
     if(state.authError) card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
 
@@ -1301,19 +1401,26 @@ const googleProvider = new GoogleAuthProvider();
     card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Email')]),email]));
     card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Password')]),password]));
 
-    card.appendChild(el('button',{class:'auth-primary',onclick:async()=>{
+    const submitAuth = async()=>{
+      if(state.authBusy) return;
       const emailValue=email.value.trim(), passwordValue=password.value;
       if(!emailValue || !passwordValue){state.authError="Enter your email and password.";render();return;}
+      state.authBusy=true;
+      state.authError=null;
+      render();
       try{
-        state.authError=null;
+        await authPersistenceReady;
         if(isLogin) await signInWithEmailAndPassword(auth,emailValue,passwordValue);
         else await createUserWithEmailAndPassword(auth,emailValue,passwordValue);
       }catch(err){
-        console.error(err);
+        console.error('Firebase authentication failed:', err);
+        state.authBusy=false;
         state.authError=friendlyAuthError(err);
         render();
       }
-    }},[txt(isLogin?'Sign in':'Create account')]));
+    };
+
+    card.appendChild(el('button',{class:'auth-primary',disabled:state.authBusy,style:state.authBusy?'opacity:.65;cursor:wait;':'',onclick:submitAuth},[txt(state.authBusy?(isLogin?'Signing in…':'Creating account…'):(isLogin?'Sign in':'Create account'))]));
 
     card.appendChild(el('div',{class:'auth-divider'},[txt('OR')]));
     card.appendChild(el('button',{
@@ -1465,6 +1572,11 @@ const googleProvider = new GoogleAuthProvider();
   }
 
 
+  function japaneseMonthName(month){
+    const names = ['睦月','如月','弥生','卯月','皐月','水無月','文月','葉月','長月','神無月','霜月','師走'];
+    return names[month] || '';
+  }
+
   function renderDaySpotlight(){
     const d = state.selectedDay || new Date();
     const dayEvents = eventsOn(dateKey(d)).slice(0,4);
@@ -1485,7 +1597,8 @@ const googleProvider = new GoogleAuthProvider();
       el('div',{class:'spotlight-kicker'},[txt('Your day')]),
       el('div',{class:'spotlight-weekday'},[txt(d.toLocaleDateString(undefined,{weekday:'long'}))]),
       el('div',{class:'spotlight-date'},[txt(String(d.getDate()))]),
-      el('div',{class:'spotlight-month'},[txt(d.toLocaleDateString(undefined,{month:'long',year:'numeric'}))])
+      el('div',{class:'spotlight-month'},[txt(d.toLocaleDateString(undefined,{month:'long',year:'numeric'}))]),
+      el('div',{class:'spotlight-season'},[txt(japaneseMonthName(d.getMonth())+' · '+d.toLocaleDateString(undefined,{month:'long'}).toUpperCase())])
     ]);
 
     const eventWrap = el('div',{class:'spotlight-events'});
