@@ -119,7 +119,7 @@ body{font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, GoogleAuthProvider, signOut,
+  getAuth, onAuthStateChanged, signInWithPopup, getRedirectResult, GoogleAuthProvider, signOut,
   setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
@@ -1064,8 +1064,10 @@ const googleProvider = new GoogleAuthProvider();
 
 
   // Google login uses delegated click handling so re-rendering the auth screen
-  // can never detach the button's handler. Redirect is the reliable path on
-  // GitHub Pages and avoids popup blockers / browser privacy restrictions.
+  // can never detach the button's handler. Use popup on GitHub Pages: Firebase
+  // documents this as the simpler alternative when redirect flows are affected
+  // by browser third-party-storage restrictions. Any popup failure is surfaced
+  // visibly instead of appearing to do nothing.
   document.addEventListener('click', async (e)=>{
     const btn = e.target.closest && e.target.closest('[data-google-login="true"]');
     if(!btn || state.authBusy) return;
@@ -1073,18 +1075,39 @@ const googleProvider = new GoogleAuthProvider();
     state.authBusy = true;
     state.authError = null;
     render();
+    console.log('[Almanac Auth] Google button clicked', {
+      origin: location.origin,
+      href: location.href,
+      authDomain: firebaseConfig.authDomain
+    });
     try{
       if(location.protocol === 'file:'){
         throw Object.assign(new Error('Google sign-in needs a web origin. Please open Almanac through the included localhost launcher.'), {code:'auth/web-origin-required'});
       }
       googleProvider.setCustomParameters({prompt:'select_account'});
-      await signInWithRedirect(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log('[Almanac Auth] Google sign-in succeeded', result?.user?.email || result?.user?.uid);
+      state.authBusy = false;
     }catch(err){
-      console.error('Google authentication failed:', err);
+      console.error('[Almanac Auth] Google sign-in failed:', err);
       state.authBusy = false;
       state.authError = friendlyAuthError(err);
       render();
     }
+  });
+
+  // Consume any pending redirect result left by an earlier v9 build. This is
+  // harmless when no redirect is pending and gives us a visible error if a
+  // previous redirect attempt failed.
+  getRedirectResult(auth).then((result)=>{
+    if(result?.user){
+      console.log('[Almanac Auth] Pending redirect sign-in succeeded', result.user.email || result.user.uid);
+    }
+  }).catch((err)=>{
+    console.error('[Almanac Auth] Pending redirect result failed:', err);
+    state.authBusy = false;
+    state.authError = friendlyAuthError(err);
+    render();
   });
 
   document.addEventListener('keydown',e=>{
