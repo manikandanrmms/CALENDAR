@@ -512,9 +512,7 @@
   @media (max-width:560px){.day-spotlight{border-radius:18px;margin:0 10px}.spotlight-date{font-size:42px}.spotlight-copy{padding:18px}.spotlight-scene{min-height:155px}.scene-temp{font-size:31px}}
 
   @media (prefers-reduced-motion: reduce){
-    .month-cell,.chip,.upcoming-item,.day-event,.modal,.auth-card,.sidebar,.main,
-    .auth-visual,.auth-visual-copy,.auth-brand,.login-calendar-card,.login-note,.login-cal-grid i,
-    .auth-visual::before{
+    .month-cell,.chip,.upcoming-item,.day-event,.modal,.auth-card,.sidebar,.main{
       animation:none !important;
     }
   }
@@ -522,6 +520,46 @@
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
   }
+
+  /* ---------- Interactive productivity layer ---------- */
+  .topbar-command{display:flex;align-items:center;gap:7px;min-width:280px;max-width:430px;flex:1;justify-content:center}
+  .command-wrap{position:relative;flex:1;max-width:360px}
+  .command-wrap input{width:100%;height:34px;border:1px solid rgba(47,21,8,.16);border-radius:9px;background:rgba(255,249,242,.72);padding:0 12px 0 32px;font:500 12px Inter,sans-serif;color:var(--ink);outline:none;transition:.18s ease;box-shadow:0 2px 8px rgba(47,21,8,.04)}
+  .command-wrap input:focus{background:#fff9f2;border-color:#B67B4B;box-shadow:0 0 0 3px rgba(182,123,75,.12),0 5px 15px rgba(47,21,8,.08)}
+  .command-wrap .cmd-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-faint);font-size:13px;pointer-events:none}
+  .command-hint{font:9px 'IBM Plex Mono',monospace;color:var(--ink-faint);white-space:nowrap}
+  .month-cell{transition:background .16s ease,transform .16s ease,box-shadow .16s ease}
+  .month-cell.drag-over{background:#FFF3E5!important;box-shadow:inset 0 0 0 2px rgba(182,123,75,.55);transform:scale(.995)}
+  .month-cell .quick-add{position:absolute;right:7px;top:7px;width:22px;height:22px;border:0;border-radius:7px;background:var(--ink);color:#fff9f2;opacity:0;transform:translateY(-3px) scale(.9);transition:.16s ease;cursor:pointer;font-size:15px;line-height:1;z-index:5}
+  .month-cell:hover .quick-add,.month-cell:focus-within .quick-add{opacity:1;transform:none}
+  .chip{cursor:grab;position:relative;transition:transform .15s ease,box-shadow .15s ease}
+  .chip:active{cursor:grabbing}
+  .chip.dragging{opacity:.45;transform:scale(.98)}
+  .chip:hover{box-shadow:0 3px 9px rgba(47,21,8,.10);transform:translateY(-1px)}
+  .day-drawer{position:fixed;right:22px;top:96px;width:340px;max-width:calc(100vw - 32px);max-height:calc(100vh - 118px);overflow:auto;background:#FFF9F2;border:1px solid rgba(47,21,8,.14);border-radius:18px;box-shadow:0 22px 55px rgba(47,21,8,.22);z-index:45;padding:18px;animation:drawerIn .28s var(--ease-spring) both}
+  .day-drawer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:1px solid #E8D5C1}
+  .day-drawer-kicker{font:9px 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+  .day-drawer-title{font:700 25px Fraunces,serif;color:var(--ink);margin-top:4px}
+  .drawer-close{border:0;background:rgba(47,21,8,.06);width:30px;height:30px;border-radius:9px;cursor:pointer;color:var(--ink);font-size:17px}
+  .drawer-summary{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}
+  .drawer-pill{padding:5px 8px;border-radius:999px;background:#F4E4D4;color:#70401E;font:600 10px Inter,sans-serif}
+  .drawer-events{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+  .drawer-event{display:flex;align-items:center;gap:9px;padding:10px;border-radius:10px;background:#FFF3E6;border:1px solid transparent;cursor:pointer;transition:.15s ease}
+  .drawer-event:hover{border-color:#D8B89C;transform:translateX(2px)}
+  .drawer-event .bar{width:4px;align-self:stretch;border-radius:4px;min-height:34px}
+  .drawer-event .time{font:9px 'IBM Plex Mono',monospace;color:var(--ink-faint);margin-bottom:2px}
+  .drawer-event .name{font:600 12px Inter,sans-serif;color:var(--ink)}
+  .drawer-empty{padding:18px 8px;text-align:center;color:var(--ink-faint);font-size:12px;border:1px dashed #D8B89C;border-radius:12px;background:rgba(255,243,230,.55)}
+  .drawer-actions{display:flex;gap:7px;margin-top:14px}
+  .drawer-actions button{flex:1;border:1px solid #D8B89C;background:#FFF5EA;color:var(--ink);border-radius:9px;padding:9px 10px;font:600 11px Inter,sans-serif;cursor:pointer}
+  .drawer-actions button.primary{background:var(--ink);color:#FFF9F2;border-color:var(--ink)}
+  .drawer-actions button:hover{transform:translateY(-1px)}
+  .drawer-shortcuts{margin-top:12px;font:9px 'IBM Plex Mono',monospace;color:var(--ink-faint);text-align:center}
+  .drop-backdrop{position:fixed;inset:0;background:transparent;z-index:40;display:none}
+  .drop-backdrop.active{display:block}
+  @keyframes drawerIn{from{opacity:0;transform:translateX(22px) scale(.98)}to{opacity:1;transform:none}}
+  @media(max-width:1050px){.topbar-command{order:3;flex-basis:100%;justify-content:flex-start;max-width:none}.command-wrap{max-width:none}}
+  @media(max-width:700px){.day-drawer{right:10px;left:10px;top:84px;width:auto}.command-hint{display:none}}
 
   .app{
     display:grid;
@@ -959,412 +997,45 @@
   .err{ color:#A6432F; font-size:11.5px; margin-top:-8px; margin-bottom:12px; }
 
 
-  /* ---------- Almanac Login — supplied hero design ---------- */
-  .app.auth-app{
-    display:block !important;
-    width:100vw;
-    min-height:100vh;
-    margin:0;
-    padding:0;
-  }
-
+  /* ---------- Firebase Authentication ---------- */
   .auth-shell{
     min-height:100vh;
     width:100%;
-    display:grid;
-    grid-template-columns:minmax(0,1.48fr) minmax(360px,.52fr);
-    background:#FFF8ED;
-    overflow:hidden;
-    position:relative;
-  }
-
-  .auth-visual{
-    min-height:100vh;
-    position:relative;
-    overflow:hidden;
-    padding:52px 58px;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    background:
-      radial-gradient(circle at 75% 18%,rgba(255,243,165,.96) 0 5%,rgba(255,243,165,.18) 5.4%,transparent 12%),
-      linear-gradient(145deg,#F7B64E 0%,#F18A5B 47%,#D85C67 100%);
-    color:#FFF8ED;
-    isolation:isolate;
-  }
-
-  .auth-visual::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    z-index:0;
-    background:
-      radial-gradient(circle at 79% 21%,rgba(255,247,195,.45),transparent 10%),
-      radial-gradient(circle at 30% 82%,rgba(255,203,92,.18),transparent 22%);
-    animation:loginAura 8s ease-in-out infinite;
-    pointer-events:none;
-  }
-
-  .auth-brand{
-    position:relative;
-    z-index:10;
-    display:flex;
-    align-items:center;
-    gap:13px;
-    animation:loginBrandIn .7s var(--ease-spring) both;
-  }
-
-  .auth-brand .mark{
-    width:39px;height:39px;
-    border-radius:11px;
-    background:#2F1508;
-    color:#FFF8ED;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-family:'Fraunces',serif;
-    font-weight:700;
-    box-shadow:0 10px 22px rgba(65,25,5,.2);
+    padding:24px;
+    background:var(--bg);
   }
-
-  .auth-brand h1{
-    font-family:'Fraunces',serif;
-    font-size:24px;
-    line-height:1;
-    margin:0;
-    font-weight:700;
-    color:#FFF8ED;
-  }
-
-  .auth-sub{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:8px;
-    letter-spacing:.12em;
-    opacity:.82;
-    margin-top:4px;
-  }
-
-  .auth-visual-copy{
-    position:relative;
-    z-index:10;
-    width:min(610px,55vw);
-    margin-top:clamp(105px,16vh,185px);
-    animation:loginCopyIn .8s .1s var(--ease-spring) both;
-  }
-
-  .auth-kicker{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:9px;
-    letter-spacing:.15em;
-    text-transform:uppercase;
-    opacity:.88;
-    margin-bottom:17px;
-  }
-
-  .auth-visual-copy h2{
-    font-family:'Fraunces',serif;
-    font-size:clamp(54px,5.1vw,80px);
-    line-height:.91;
-    letter-spacing:-.055em;
-    margin:0;
-    max-width:620px;
-    color:#2F1508;
-  }
-
-  .auth-visual-copy p{
-    max-width:500px;
-    font-size:13px;
-    line-height:1.6;
-    color:#3F1D0D;
-    opacity:.88;
-    margin:24px 0 0;
-  }
-
-  .auth-scene{
-    position:absolute;
-    z-index:5;
-    inset:0;
-    pointer-events:none;
-  }
-
-  .login-calendar-card{
-    position:absolute;
-    right:8%;
-    top:48%;
-    width:min(385px,35vw);
-    height:275px;
-    background:#FFF8ED;
-    border:2px solid #2F1508;
-    border-radius:25px;
-    transform:rotate(5deg);
-    box-shadow:0 28px 55px rgba(73,29,8,.22);
-    animation:calendarFloat 5s ease-in-out infinite;
-  }
-
-  .login-calendar-card::before{
-    content:"";
-    position:absolute;
-    left:22px;right:22px;top:21px;
-    height:4px;
-    border-radius:4px;
-    background:#2F1508;
-    opacity:.1;
-  }
-
-  .login-cal-title{
-    position:absolute;
-    left:24px;top:39px;
-    font-family:'Fraunces',serif;
-    font-size:24px;
-    color:#2F1508;
-  }
-
-  .login-cal-month{
-    position:absolute;
-    right:24px;top:43px;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:8px;
-    color:#9B6D50;
-    text-transform:uppercase;
-  }
-
-  .login-cal-grid{
-    position:absolute;
-    left:23px;right:23px;top:85px;bottom:22px;
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:8px;
-  }
-
-  .login-cal-grid i{
-    border-radius:6px;
-    background:#F1DFCE;
-    min-height:20px;
-    animation:calendarDotIn .5s var(--ease-spring) both;
-  }
-  .login-cal-grid i:nth-child(3n){background:#E8A02D}
-  .login-cal-grid i:nth-child(5n){background:#D86A68}
-  .login-cal-grid i:nth-child(2n){opacity:.55}
-
-  .login-note{
-    position:absolute;
-    left:39%;
-    bottom:4%;
-    width:220px;
-    padding:18px;
-    background:#2F1508;
-    color:#FFF8ED;
-    border-radius:18px;
-    transform:rotate(-7deg);
-    box-shadow:0 22px 35px rgba(47,21,8,.22);
-    animation:noteFloat 4.4s ease-in-out infinite;
-  }
-
-  .login-note .small{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:8px;
-    letter-spacing:.1em;
-    opacity:.65;
-    text-transform:uppercase;
-  }
-
-  .login-note strong{
-    display:block;
-    margin-top:7px;
-    font-family:'Fraunces',serif;
-    font-size:21px;
-    line-height:1;
-  }
-
-  .login-note span{
-    display:block;
-    margin-top:7px;
-    font-size:9px;
-    line-height:1.4;
-    opacity:.7;
-  }
-
-  .auth-form-panel{
-    min-height:100vh;
-    background:#FFF8ED;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:40px 42px;
-    position:relative;
-    z-index:20;
-  }
-
   .auth-card{
     width:100%;
-    max-width:390px;
-    background:transparent;
-    border:0;
-    box-shadow:none;
-    padding:0;
-    animation:authCardIn .7s .12s var(--ease-spring) both;
-  }
-
-  .auth-title{
-    font-family:'Fraunces',serif;
-    font-size:42px;
-    line-height:1;
-    letter-spacing:-.045em;
-    color:#2F1508;
-    margin:0 0 10px;
-  }
-
-  .auth-copy{
-    font-size:12px;
-    line-height:1.65;
-    color:#8B624C;
-    margin:0 0 28px;
-    max-width:320px;
-  }
-
-  .auth-error{
-    color:#A6432F;
-    background:#FCEDEA;
-    border:1px solid #EBC9C1;
-    border-radius:10px;
-    padding:10px 12px;
-    font-size:11px;
-    margin-bottom:14px;
-    animation:errorShake .42s ease both;
-  }
-
-  .google-login-btn{
-    width:100%;
-    min-height:56px;
-    box-sizing:border-box;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:11px;
-    background:#2F1508;
-    color:#FFF8ED;
-    border:0;
+    max-width:410px;
+    margin:0 auto;
+    background:var(--white);
+    border:1px solid var(--line);
     border-radius:14px;
-    padding:12px 18px;
-    font-family:'Inter',sans-serif;
-    font-size:13px;
-    font-weight:700;
-    cursor:pointer;
-    box-shadow:0 12px 25px rgba(47,21,8,.16);
-    transition:transform .25s var(--ease-spring),box-shadow .25s ease,background .2s ease;
-    position:relative;
-    overflow:hidden;
+    box-shadow:var(--shadow-lg);
+    padding:30px;
   }
-
-  .google-login-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 17px 31px rgba(47,21,8,.2);
-    background:#47200D;
-  }
-
-  .google-login-btn:active{transform:translateY(0) scale(.985);}
-  .google-login-btn.busy{cursor:wait;opacity:.92;}
-
-  .google-icon{
-    width:22px;height:22px;
-    border-radius:50%;
-    background:#FFF;
-    color:#4285F4;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:Arial,sans-serif;
-    font-weight:800;
-    font-size:15px;
-    flex:0 0 auto;
-  }
-
-  .google-login-btn.busy .google-icon{animation:googleSpin .8s linear infinite;}
-
-  .google-login-label{
-    display:inline-block;
-    min-width:150px;
-    text-align:left;
-  }
-
-  .google-login-btn.busy .google-login-label{
-    animation:loginTextPulse 1.2s ease-in-out infinite;
-  }
-
-  .auth-helper{
-    margin-top:17px;
-    font-family:'IBM Plex Mono',monospace;
-    color:#A07861;
-    font-size:8.5px;
-    line-height:1.6;
-    text-align:center;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-  }
-
-  .auth-security{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    margin-top:28px;
-    font-size:10px;
-    color:#A07861;
-  }
-
-  .auth-security::before{
-    content:"";
-    width:7px;height:7px;
-    border-radius:50%;
-    background:#67A36E;
-    box-shadow:0 0 0 4px #E7F0E4;
-  }
-
-  @keyframes loginAura{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(2%,3%) scale(1.06)}}
-  @keyframes loginBrandIn{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:none}}
-  @keyframes loginCopyIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  @keyframes calendarFloat{0%,100%{transform:rotate(5deg) translateY(0)}50%{transform:rotate(2.5deg) translateY(-11px)}}
-  @keyframes noteFloat{0%,100%{transform:rotate(-7deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-9px)}}
-  @keyframes calendarDotIn{from{opacity:0;transform:scale(.4) rotate(-10deg)}to{opacity:1;transform:none}}
-  @keyframes errorShake{0%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}100%{transform:none}}
-  @keyframes googleSpin{to{transform:rotate(360deg)}}
-  @keyframes loginTextPulse{0%,100%{opacity:.72}50%{opacity:1}}
-
-  @media(max-width:1050px){
-    .auth-shell{grid-template-columns:minmax(0,1.35fr) minmax(330px,.65fr);}
-    .auth-visual{padding-left:38px;padding-right:38px;}
-    .login-calendar-card{right:5%;width:330px;}
-    .auth-visual-copy{width:60vw;}
-    .auth-visual-copy h2{font-size:clamp(50px,5.5vw,70px);}
-  }
-
-  @media(max-width:800px){
-    .auth-shell{grid-template-columns:1fr;}
-    .auth-visual{min-height:580px;padding:30px 28px;}
-    .auth-visual-copy{width:min(600px,90vw);margin-top:95px;}
-    .auth-visual-copy h2{font-size:54px;}
-    .login-calendar-card{top:51%;right:6%;width:330px;height:235px;}
-    .login-note{left:8%;bottom:4%;}
-    .auth-form-panel{min-height:430px;padding:42px 28px 52px;}
-  }
-
-  @media(max-width:520px){
-    .auth-visual{min-height:510px;padding:24px 20px;}
-    .auth-brand h1{font-size:21px;}
-    .auth-visual-copy{margin-top:72px;}
-    .auth-kicker{font-size:8px;margin-bottom:12px;}
-    .auth-visual-copy h2{font-size:43px;max-width:360px;}
-    .auth-visual-copy p{font-size:11px;margin-top:18px;max-width:330px;}
-    .login-calendar-card{top:57%;right:-2%;width:285px;height:190px;}
-    .login-cal-title{font-size:21px;top:31px;}
-    .login-cal-month{top:35px;}
-    .login-cal-grid{top:70px;gap:5px;}
-    .login-note{left:4%;bottom:3%;width:165px;padding:14px;}
-    .login-note strong{font-size:17px;}
-    .auth-form-panel{padding:36px 22px 45px;}
-    .auth-title{font-size:35px;}
-  }
-
+  .auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+  .auth-brand .mark{font-family:'Fraunces',serif;font-weight:600;font-size:15px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;}
+  .auth-brand h1{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin:0;}
+  .auth-sub{font-size:12px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+  .auth-title{font-family:'Fraunces',serif;font-size:24px;font-weight:600;margin:0 0 5px;}
+  .auth-copy{font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;}
+  .auth-field{margin-bottom:13px;}
+  .auth-field label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;}
+  .auth-field input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 11px;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);background:var(--bg);}
+  .auth-field input:focus{outline:2px solid var(--amber);outline-offset:0;border-color:transparent;}
+  .auth-primary{width:100%;background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:11px 14px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;}
+  .auth-primary:hover{background:#000;}
+  .auth-google{width:100%;background:var(--white);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;margin-top:10px;}
+  .auth-google:hover{background:var(--bg-panel);}
+  .auth-divider{display:flex;align-items:center;gap:10px;color:var(--ink-faint);font-size:10px;margin:16px 0;}
+  .auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line-soft);flex:1;}
+  .auth-switch{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:17px;}
+  .auth-link{background:none;border:none;color:var(--amber-ink);font-weight:700;cursor:pointer;padding:0;font:inherit;}
+  .auth-error{color:#A6432F;background:#FCEDEA;border:1px solid #EBC9C1;border-radius:7px;padding:9px 10px;font-size:11.5px;margin-bottom:12px;}
   .user-area{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px;}
   .user-email{font-size:10.5px;color:var(--ink-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;}
   .logout-btn{background:none;border:1px solid var(--line);border-radius:7px;color:var(--ink-soft);padding:5px 8px;font-size:10.5px;font-weight:600;cursor:pointer;}
@@ -1400,9 +1071,8 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
-  initializeAuth, browserLocalPersistence, browserSessionPersistence,
-  browserPopupRedirectResolver, onAuthStateChanged,
-  signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   initializeFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
@@ -1418,15 +1088,11 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const auth = initializeAuth(firebaseApp, {
-  persistence: [browserLocalPersistence, browserSessionPersistence],
-  popupRedirectResolver: browserPopupRedirectResolver
-});
+const auth = getAuth(firebaseApp);
 const db = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true
 });
 const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({prompt:"select_account"});
 
 (function(){
   "use strict";
@@ -1465,10 +1131,13 @@ googleProvider.setCustomParameters({prompt:"select_account"});
     editing:null,         // event being edited, or null for new
     modalOpen:false,
     modalDefaults:null,
-        authError:null,
+    authMode:"login",
+    authError:null,
     authBusy:false,
     toast:"",
     toastTimer:null,
+    drawerOpen:false,
+    dragEventId:null,
   };
 
   function eventsCollection(){
@@ -1569,13 +1238,12 @@ googleProvider.setCustomParameters({prompt:"select_account"});
     const app = document.getElementById('app');
     app.innerHTML = "";
     if(!auth.currentUser){
-      app.className = "app auth-app";
       app.appendChild(renderAuth());
       return;
     }
-    app.className = "app";
     app.appendChild(renderSidebar());
     app.appendChild(renderMain());
+    if(state.drawerOpen) app.appendChild(renderDayDrawer());
     if(state.modalOpen) app.appendChild(renderModal());
     if(state.toast){
       app.appendChild(el('div',{class:'app-toast'},[txt(state.toast)]));
@@ -1599,14 +1267,13 @@ googleProvider.setCustomParameters({prompt:"select_account"});
   function friendlyAuthError(error){
     const code = error?.code || "";
     const messages = {
-      "auth/invalid-credential":"Google could not verify this sign-in. Please try again.",
-      "auth/invalid-email":"Google returned an invalid account identity. Please try again.",
-      "auth/account-exists-with-different-credential":"This Google account is already linked to another sign-in method.",
-      "auth/operation-not-allowed":"Google sign-in is not enabled in your Firebase Authentication settings.",
-      "auth/network-request-failed":"Network error while contacting Google. Please check your connection.",
+      "auth/invalid-credential":"Email or password is incorrect.",
+      "auth/invalid-email":"Please enter a valid email address.",
+      "auth/email-already-in-use":"An account already exists with this email.",
+      "auth/weak-password":"Password should be at least 6 characters.",
       "auth/popup-closed-by-user":"Google sign-in was cancelled. Please try again.",
-      "auth/cancelled-popup-request":"A Google sign-in request was already in progress. Please try again.",
-      "auth/popup-blocked":"Google sign-in was blocked by the browser. Please try again.",
+      "auth/cancelled-popup-request":"A Google sign-in window was already in progress. Close any Google sign-in window and click the button once.",
+      "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
       "auth/too-many-requests":"Too many attempts. Please try again later."
     };
     return messages[code] || error?.message || "Authentication failed.";
@@ -1614,123 +1281,80 @@ googleProvider.setCustomParameters({prompt:"select_account"});
 
   function renderAuth(){
     const shell = el('div',{class:'auth-shell'});
-
-    const visual = el('section',{class:'auth-visual'},[
-      el('div',{class:'auth-brand'},[
-        el('div',{class:'mark'},[txt('A')]),
-        el('div',{},[
-          el('h1',{},[txt('Almanac')]),
-          el('div',{class:'auth-sub'},[txt('CALENDAR · SCHEDULER')])
-        ])
-      ]),
-      el('div',{class:'auth-visual-copy'},[
-        el('div',{class:'auth-kicker'},[txt('YOUR TIME · YOUR SPACE')]),
-        el('h2',{},[txt('Make time for what matters.')]),
-        el('p',{},[txt('Plan your days, keep your events close, and let your calendar move with you.')])
-      ])
-    ]);
-
-    const scene = el('div',{class:'auth-scene'});
-    const calGrid = el('div',{class:'login-cal-grid'});
-    for(let i=0;i<35;i++){
-      calGrid.appendChild(el('i',{style:`animation-delay:${Math.min(i*.018,.55)}s`}));
-    }
-    const cal = el('div',{class:'login-calendar-card'},[
-      el('div',{class:'login-cal-title'},[txt('August')]),
-      el('div',{class:'login-cal-month'},[txt('2026 · PLAN')]),
-      calGrid
-    ]);
-    scene.appendChild(cal);
-    scene.appendChild(el('div',{class:'login-note'},[
-      el('div',{class:'small'},[txt('TODAY · FOCUS')]),
-      el('strong',{},[txt('Your day, organized.')]),
-      el('span',{},[txt('One calm place for every plan.')])
-    ]));
-    visual.appendChild(scene);
-
-    const panel = el('section',{class:'auth-form-panel'});
     const card = el('div',{class:'auth-card'});
+    const isLogin = state.authMode==="login";
 
-    card.appendChild(el('h2',{class:'auth-title'},[txt('Welcome back.')]));
-    card.appendChild(el('p',{class:'auth-copy'},[
-      txt('Sign in securely with your Google Account to access your cloud calendar.')
+    card.appendChild(el('div',{class:'auth-brand'},[
+      el('div',{class:'mark'},[txt('A')]),
+      el('div',{},[
+        el('h1',{},[txt('Almanac')]),
+        el('div',{class:'auth-sub'},[txt('CALENDAR · SCHEDULER')])
+      ])
     ]));
+    card.appendChild(el('h2',{class:'auth-title'},[txt(isLogin?'Welcome back':'Create your account')]));
+    card.appendChild(el('p',{class:'auth-copy'},[txt(isLogin?'Sign in to access your cloud calendar.':'Create a secure account for your cloud calendar.')]));
 
-    if(state.authError){
-      card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
-    }
+    if(state.authError) card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
 
-    const googleButton = el('button',{
-      class:'google-login-btn',
-      type:'button',
+    const email = el('input',{type:'email',id:'auth-email',placeholder:'you@example.com',autocomplete:'email'});
+    const password = el('input',{type:'password',id:'auth-password',placeholder:'Password',autocomplete:isLogin?'current-password':'new-password'});
+    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Email')]),email]));
+    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Password')]),password]));
+
+    card.appendChild(el('button',{class:'auth-primary',onclick:async()=>{
+      const emailValue=email.value.trim(), passwordValue=password.value;
+      if(!emailValue || !passwordValue){state.authError="Enter your email and password.";render();return;}
+      try{
+        state.authError=null;
+        if(isLogin) await signInWithEmailAndPassword(auth,emailValue,passwordValue);
+        else await createUserWithEmailAndPassword(auth,emailValue,passwordValue);
+      }catch(err){
+        console.error(err);
+        state.authError=friendlyAuthError(err);
+        render();
+      }
+    }},[txt(isLogin?'Sign in':'Create account')]));
+
+    card.appendChild(el('div',{class:'auth-divider'},[txt('OR')]));
+    card.appendChild(el('button',{
+      class:'auth-google',
+      disabled:state.authBusy,
+      style:state.authBusy?'opacity:.6;cursor:wait;':'',
       onclick:async()=>{
         if(state.authBusy) return;
 
-        // Synchronous visual feedback proves the click handler fired.
-        state.authBusy = true;
-        state.authError = null;
-        googleButton.disabled = true;
-        googleButton.classList.add('busy');
-        googleButton.querySelector('.google-login-label').textContent = 'Opening Google…';
+        // OAuth popups need a real web origin. Opening the downloaded HTML
+        // directly with file:// can cause Firebase to cancel the popup flow.
+        if(location.protocol === 'file:'){
+          state.authError = "Google sign-in needs the app to run from http://localhost or a hosted HTTPS address. Email/password sign-in can still be tested here.";
+          render();
+          return;
+        }
 
         try{
-          const result = await signInWithPopup(
-            auth,
-            googleProvider,
-            browserPopupRedirectResolver
-          );
-
-          // Firebase has authenticated the Google account.
-          state.authBusy = false;
-          state.authError = null;
-
-          if(result?.user){
-            render();
-          }
-        }catch(error){
-          console.error('Google authentication error:', error);
-
-          // If a browser blocks the popup, use redirect authentication.
-          if(error?.code === 'auth/popup-blocked'){
-            try{
-              await signInWithRedirect(
-                auth,
-                googleProvider,
-                browserPopupRedirectResolver
-              );
-              return;
-            }catch(redirectError){
-              console.error('Google redirect authentication error:', redirectError);
-              error = redirectError;
-            }
-          }
-
-          state.authBusy = false;
-          state.authError = friendlyAuthError(error);
+          state.authBusy=true;
+          state.authError=null;
+          render();
+          await signInWithPopup(auth,googleProvider);
+        }catch(err){
+          console.error(err);
+          state.authBusy=false;
+          state.authError=friendlyAuthError(err);
           render();
         }
       }
-    },[
-      el('span',{class:'google-icon'},[txt('G')]),
-      el('span',{class:'google-login-label'},[txt('Continue with Google')])
-    ]);
+    },[txt(state.authBusy?'Opening Google…':'Continue with Google')]));
 
-    card.appendChild(googleButton);
-
-    card.appendChild(el('div',{class:'auth-helper'},[
-      txt('Use your Google Account · No password required')
+    card.appendChild(el('div',{class:'auth-switch'},[
+      txt(isLogin?"Don't have an account? ":"Already have an account? "),
+      el('button',{class:'auth-link',onclick:()=>{
+        state.authMode=isLogin?'register':'login';
+        state.authError=null;
+        render();
+      }},[txt(isLogin?'Create one':'Sign in')])
     ]));
-
-    card.appendChild(el('div',{class:'auth-security'},[
-      txt('SECURE FIREBASE AUTHENTICATION')
-    ]));
-
-    panel.appendChild(card);
-    shell.appendChild(visual);
-    shell.appendChild(panel);
-    return shell;
+    return shell.appendChild(card), shell;
   }
-
 
   function renderSidebar(){
     const sb = el('div',{class:'sidebar'});
@@ -1766,7 +1390,7 @@ googleProvider.setCustomParameters({prompt:"select_account"});
     sb.appendChild(renderUpcoming());
 
     sb.appendChild(el('div',{class:'user-area'},[
-      el('div',{class:'user-email',title:auth.currentUser?.displayName||auth.currentUser?.email||""},[txt(auth.currentUser?.displayName||"Google account")]),
+      el('div',{class:'user-email',title:auth.currentUser?.email||""},[txt(auth.currentUser?.email||"Signed in")]),
       el('button',{class:'logout-btn',onclick:async()=>{await signOut(auth);}},[txt('Sign out')])
     ]));
 
@@ -1886,6 +1510,53 @@ googleProvider.setCustomParameters({prompt:"select_account"});
     return card;
   }
 
+  function openDayDrawer(date){
+    state.selectedDay = new Date(date);
+    state.cursor = new Date(date.getFullYear(), date.getMonth(), 1);
+    state.drawerOpen = true;
+    render();
+  }
+
+  function renderDayDrawer(){
+    const d = state.selectedDay;
+    const dayEvents = eventsOn(dateKey(d));
+    const drawer = el('aside',{class:'day-drawer',role:'dialog','aria-label':'Day details'});
+    const close = ()=>{state.drawerOpen=false; render();};
+    drawer.appendChild(el('div',{class:'day-drawer-head'},[
+      el('div',{},[
+        el('div',{class:'day-drawer-kicker'},[txt('Selected day')]),
+        el('div',{class:'day-drawer-title'},[txt(d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}))])
+      ]),
+      el('button',{class:'drawer-close',onclick:close,'aria-label':'Close day details'},[txt('×')])
+    ]));
+    const total = dayEvents.length;
+    const timed = dayEvents.filter(e=>e.start).length;
+    drawer.appendChild(el('div',{class:'drawer-summary'},[
+      el('span',{class:'drawer-pill'},[txt(total+' event'+(total===1?'':'s'))]),
+      el('span',{class:'drawer-pill'},[txt(timed+' timed')])
+    ]));
+    const list = el('div',{class:'drawer-events'});
+    if(!dayEvents.length){
+      list.appendChild(el('div',{class:'drawer-empty'},[txt('Nothing scheduled yet. Add something to make this day yours.')]))
+    }else{
+      dayEvents.forEach(ev=>list.appendChild(el('div',{class:'drawer-event',onclick:()=>{state.drawerOpen=false;openModal(ev)}},[
+        el('span',{class:'bar bar-'+CATS[ev.category].cls}),
+        el('div',{},[
+          el('div',{class:'time'},[txt(ev.start ? fmtTime(ev.start)+(ev.end?' – '+fmtTime(ev.end):'') : 'All day')]),
+          el('div',{class:'name'},[txt(ev.title)])
+        ])
+      ])));
+    }
+    drawer.appendChild(list);
+    drawer.appendChild(el('div',{class:'drawer-actions'},[
+      el('button',{class:'primary',onclick:()=>{state.drawerOpen=false;openModal(null,d)}},[txt('+ Add event')]),
+      el('button',{onclick:()=>{state.drawerOpen=false;state.view='day';state.motion='today';render();}},[txt('Open day view')])
+    ]));
+    drawer.appendChild(el('div',{class:'drawer-shortcuts'},[txt('Tip: drag an event onto another day to reschedule it')]))
+    return drawer;
+  }
+
+
   function renderMain(){
     const main = el('div',{class:'main'});
     main.appendChild(renderTopbar());
@@ -1905,35 +1576,74 @@ googleProvider.setCustomParameters({prompt:"select_account"});
     return main;
   }
 
+  function parseNaturalCommand(input){
+    const raw=input.trim();
+    if(!raw) return null;
+    const lower=raw.toLowerCase();
+    const now=new Date();
+    let d=new Date(now); d.setHours(0,0,0,0);
+    if(/\btomorrow\b/.test(lower)) d.setDate(d.getDate()+1);
+    else if(/\byesterday\b/.test(lower)) d.setDate(d.getDate()-1);
+    else if(/\btoday\b/.test(lower)){}
+    else{
+      const weekdays={sunday:0,monday:1,tuesday:2,wednesday:3,thursday:4,friday:5,saturday:6};
+      const hit=Object.keys(weekdays).find(w=>new RegExp('\b'+w+'\b').test(lower));
+      if(hit){ const delta=(weekdays[hit]-d.getDay()+7)%7; d.setDate(d.getDate()+(delta||7)); }
+      else{
+        const dateMatch=lower.match(/\b(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?\b/);
+        if(dateMatch){ const yy=dateMatch[3]?Number(dateMatch[3].length===2?'20'+dateMatch[3]:dateMatch[3]):d.getFullYear(); d=new Date(yy,Number(dateMatch[2])-1,Number(dateMatch[1])); }
+      }
+    }
+    let start='09:00';
+    const timeMatch=lower.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/);
+    if(timeMatch){ let h=Number(timeMatch[1]); const min=Number(timeMatch[2]||0); const ap=timeMatch[3]; if(ap==='pm'&&h<12)h+=12;if(ap==='am'&&h===12)h=0;start=pad(h)+':'+pad(min); }
+    const title=raw
+      .replace(/\b(today|tomorrow|yesterday|sunday|monday|tuesday|wednesday|thursday|friday|saturday)\b/ig,'')
+      .replace(/\b\d{1,2}[\/.-]\d{1,2}(?:[\/.-]\d{2,4})?\b/g,'')
+      .replace(/\b\d{1,2}(?::\d{2})?\s*(?:am|pm)\b/ig,'')
+      .replace(/^\s*(at|on|for)\s+/i,'').replace(/\s+/g,' ').trim();
+    return {date:d,title:title||'New event',start};
+  }
+
+
   function renderTopbar(){
     const top = el('div',{class:'topbar'});
-    let titleStr;
-    if(state.view==='month'){
-      titleStr = MONTHS[state.cursor.getMonth()]+" "+state.cursor.getFullYear();
-    } else {
-      titleStr = state.selectedDay.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
-    }
+    let titleStr = state.view==='month'
+      ? MONTHS[state.cursor.getMonth()]+' '+state.cursor.getFullYear()
+      : state.selectedDay.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
     const left = el('div',{class:'topbar-left'},[
       el('h2',{},[txt(titleStr)]),
-      el('button',{class:'today-btn', onclick:()=>{
-        const t = new Date();
-        state.cursor = new Date(t.getFullYear(), t.getMonth(),1);
-        state.selectedDay = t;
-        render();
-        state.motion='today';
-        render();
+      el('button',{class:'today-btn',onclick:()=>{
+        const t=new Date(); state.cursor=new Date(t.getFullYear(),t.getMonth(),1); state.selectedDay=t; state.motion='today'; state.drawerOpen=false; render();
       }},[txt('Today')]),
       el('div',{class:'topbar-nav'},[
-        el('button',{class:'icon-btn', 'aria-label':'Previous', onclick:()=> step(-1)},[txt('‹')]),
-        el('button',{class:'icon-btn', 'aria-label':'Next', onclick:()=> step(1)},[txt('›')]),
+        el('button',{class:'icon-btn','aria-label':'Previous',onclick:()=>step(-1)},[txt('‹')]),
+        el('button',{class:'icon-btn','aria-label':'Next',onclick:()=>step(1)},[txt('›')])
       ])
     ]);
-    const toggle = el('div',{class:'view-toggle'},[
-      el('button',{class:'view-btn'+(state.view==='month'?' active':''), onclick:()=>{state.motion='today'; state.view='month'; render();}},[txt('Month')]),
-      el('button',{class:'view-btn'+(state.view==='day'?' active':''), onclick:()=>{state.motion='today'; state.view='day'; render();}},[txt('Day')]),
+
+    const commandInput=el('input',{type:'text',placeholder:'Try “Buy fish Sunday at 9 AM”…',autocomplete:'off'});
+    const runCommand=()=>{
+      const parsed=parseNaturalCommand(commandInput.value);
+      if(!parsed) return;
+      state.selectedDay=parsed.date; state.cursor=new Date(parsed.date.getFullYear(),parsed.date.getMonth(),1); state.drawerOpen=false;
+      openModal(null,parsed.date,parsed.start);
+      state.editing.title=parsed.title;
+      const titleInput=document.getElementById('f-title'); if(titleInput) titleInput.value=parsed.title;
+    };
+    commandInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runCommand();}});
+    const command=el('div',{class:'topbar-command'},[
+      el('div',{class:'command-wrap'},[
+        el('span',{class:'cmd-icon'},[txt('✦')]),commandInput
+      ]),
+      el('span',{class:'command-hint'},[txt('natural language')])
     ]);
-    top.appendChild(left);
-    top.appendChild(toggle);
+
+    const toggle=el('div',{class:'view-toggle'},[
+      el('button',{class:'view-btn'+(state.view==='month'?' active':''),onclick:()=>{state.motion='today';state.view='month';state.drawerOpen=false;render();}},[txt('Month')]),
+      el('button',{class:'view-btn'+(state.view==='day'?' active':''),onclick:()=>{state.motion='today';state.view='day';state.drawerOpen=false;render();}},[txt('Day')])
+    ]);
+    top.appendChild(left); top.appendChild(command); top.appendChild(toggle);
     return top;
   }
 
@@ -1949,6 +1659,24 @@ googleProvider.setCustomParameters({prompt:"select_account"});
     }
     render();
   }
+
+  function startEventDrag(e,id){
+    state.dragEventId=id;
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',id);
+    e.currentTarget.classList.add('dragging');
+  }
+
+  async function dropEventOnDate(date){
+    const id=state.dragEventId;
+    state.dragEventId=null;
+    const ev=state.events.find(x=>x.id===id);
+    if(!ev || ev.date===date) return;
+    const moved={...ev,date};
+    const ok=await upsertEvent(moved);
+    if(ok){ showToast('Moved “'+ev.title+'” to '+parseKey(date).toLocaleDateString(undefined,{month:'short',day:'numeric'})); render(); }
+  }
+
 
   function renderMonthGrid(){
     const wrap = el('div',{});
@@ -1971,14 +1699,18 @@ googleProvider.setCustomParameters({prompt:"select_account"});
       const cell = el('div',{
         class:'month-cell'+(isOther?' other-month':''),
         style:`animation-delay:${Math.min(i*0.018,0.48)}s`,
-        onclick:()=>{ state.selectedDay=d; state.view='day'; state.motion='today'; render(); }
+        onclick:()=>openDayDrawer(d),
+        ondragover:(e)=>{e.preventDefault();cell.classList.add('drag-over');},
+        ondragleave:()=>cell.classList.remove('drag-over'),
+        ondrop:async(e)=>{e.preventDefault();cell.classList.remove('drag-over');await dropEventOnDate(dateKey(d));}
       });
       cell.appendChild(el('div',{class:'date-num'+(isToday?' today':'')},[txt(d.getDate())]));
+      cell.appendChild(el('button',{class:'quick-add',title:'Add event',onclick:(e)=>{e.stopPropagation();openModal(null,d)}},[txt('+')]));
 
       const evWrap = el('div',{class:'cell-events'});
       const shown = dayEvents.slice(0,3);
       shown.forEach(ev=>{
-        const chip = el('div',{class:'chip cat-'+CATS[ev.category].cls, onclick:(e)=>{ e.stopPropagation(); openModal(ev); }},[]);
+        const chip = el('div',{class:'chip cat-'+CATS[ev.category].cls,draggable:'true',onclick:(e)=>{ e.stopPropagation(); openModal(ev); },ondragstart:(e)=>startEventDrag(e,ev.id),ondragend:()=>{document.querySelectorAll('.month-cell').forEach(c=>c.classList.remove('drag-over'));}},[]);
         if(ev.start) chip.appendChild(el('span',{class:'t'},[txt(fmtTime(ev.start).replace(':00',''))]));
         chip.appendChild(el('span',{},[txt(ev.title)]));
         evWrap.appendChild(chip);
@@ -2255,34 +1987,12 @@ googleProvider.setCustomParameters({prompt:"select_account"});
 
 
   // Firebase authentication controls access to the calendar.
-  // Complete a Google redirect sign-in when the browser returns to this page.
-  (async()=>{
-    try{
-      await getRedirectResult(auth);
-    }catch(err){
-      console.error("Google redirect sign-in failed:", err);
-      state.authBusy=false;
-      state.authError=friendlyAuthError(err);
-      render();
-    }
-  })();
 
-  window.addEventListener('error',(event)=>{
-    console.error('Calendar runtime error:',event.error || event.message);
-    if(!auth.currentUser && state){
-      state.authBusy=false;
-      state.authError='The login script encountered an error. Please refresh the page and try again.';
-      render();
-    }
-  });
-
-  window.addEventListener('unhandledrejection',(event)=>{
-    console.error('Calendar unhandled promise rejection:',event.reason);
-    if(!auth.currentUser && state){
-      state.authBusy=false;
-      state.authError=friendlyAuthError(event.reason);
-      render();
-    }
+  document.addEventListener('keydown',e=>{
+    if(e.target && ['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+    if(e.key.toLowerCase()==='n'){e.preventDefault();openModal(null,state.selectedDay);}
+    else if(e.key.toLowerCase()==='t'){e.preventDefault();const t=new Date();state.cursor=new Date(t.getFullYear(),t.getMonth(),1);state.selectedDay=t;state.motion='today';render();}
+    else if(e.key==='Escape' && state.drawerOpen){state.drawerOpen=false;render();}
   });
 
   onAuthStateChanged(auth, async (user)=>{
