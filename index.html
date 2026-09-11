@@ -51,88 +51,22 @@ body{font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 @media(max-width:1050px){.app{display:block!important}.sidebar{display:none!important}.main{padding:12px!important}.month-cell{min-height:98px!important}}
 @media(max-width:720px){.main{padding:8px!important}.topbar{height:auto!important;flex-wrap:wrap!important;gap:8px!important}.topbar-command{order:3;width:100%!important}.command-wrap{width:100%!important}.command{width:100%!important}.month-cell{min-height:82px!important;padding:6px!important}.month-dow{padding:0 6px!important}.chip{font-size:8px!important}}
 
-/* ===== Almanac authentication — polished spatial dashboard ===== */
-.auth-shell{
-  position:fixed!important; inset:0!important; z-index:200!important;
-  min-height:100vh!important; width:100%!important;
-  display:grid!important; place-items:center!important;
-  padding:32px!important; overflow:auto!important;
-  background:
-    radial-gradient(900px 520px at 16% 8%,rgba(55,104,246,.20),transparent 62%),
-    radial-gradient(700px 500px at 92% 88%,rgba(82,118,190,.10),transparent 65%),
-    linear-gradient(135deg,#060a12 0%,#09101b 52%,#060a11 100%)!important;
-}
-.auth-shell:before{
-  content:""; position:absolute; inset:0; pointer-events:none; opacity:.45;
-  background-image:radial-gradient(rgba(255,255,255,.055) .6px,transparent .6px);
-  background-size:6px 6px;
-}
-.auth-shell:after{
-  content:""; position:absolute; width:520px; height:520px; border-radius:50%;
-  border:1px solid rgba(72,117,230,.12); box-shadow:0 0 0 60px rgba(72,117,230,.025),0 0 0 120px rgba(72,117,230,.018);
-  right:-170px; top:-190px; pointer-events:none;
-}
-.auth-card{
-  position:relative!important; z-index:2!important; width:min(100%,430px)!important;
-  padding:38px 40px 32px!important; margin:auto!important;
-  background:linear-gradient(145deg,rgba(18,27,42,.94),rgba(10,17,28,.97))!important;
-  border:1px solid rgba(255,255,255,.10)!important;
-  border-radius:24px!important;
-  box-shadow:0 35px 100px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.045)!important;
-  overflow:hidden!important;
-}
-.auth-card:before{
-  content:""; position:absolute; left:0; right:0; top:0; height:2px;
-  background:linear-gradient(90deg,transparent,#4d7cf3 28%,#78a0ff 50%,#4d7cf3 72%,transparent);
-  opacity:.8;
-}
-.auth-brand{display:flex!important;align-items:center!important;gap:12px!important;margin:0 0 34px!important}
-.auth-brand .mark{width:42px!important;height:42px!important;border-radius:13px!important;display:grid!important;place-items:center!important;background:linear-gradient(145deg,#356cf0,#1749bd)!important;color:white!important;font:600 22px Georgia,serif!important;box-shadow:0 9px 25px rgba(35,88,214,.28)!important}
-.auth-brand h1{margin:0!important;color:#f4f7fb!important;font:600 22px Inter,system-ui,sans-serif!important;letter-spacing:-.03em!important}
-.auth-sub{margin-top:4px!important;color:#68778d!important;font:500 8px 'IBM Plex Mono',monospace!important;letter-spacing:.16em!important}
-.auth-title{margin:0!important;color:#f2f5fa!important;font:600 30px Inter,system-ui,sans-serif!important;letter-spacing:-.04em!important}
-.auth-copy{margin:9px 0 25px!important;color:#8490a3!important;font-size:13px!important;line-height:1.55!important}
-.auth-environment-note{margin:0 0 18px!important;padding:11px 12px!important;border:1px solid rgba(70,112,210,.22)!important;border-radius:11px!important;background:rgba(45,82,154,.10)!important;color:#8797b0!important;font-size:11px!important;line-height:1.45!important}
-.auth-environment-note strong{display:block!important;color:#b9cbef!important;margin-bottom:2px!important;font-weight:600!important}
-.auth-error{margin:0 0 16px!important;padding:11px 12px!important;border-radius:10px!important;background:rgba(135,44,42,.16)!important;border:1px solid rgba(220,94,87,.26)!important;color:#efa6a0!important;font-size:11px!important;line-height:1.45!important}
-.auth-field{margin:0 0 14px!important}
-.auth-field label{display:block!important;margin:0 0 7px!important;color:#9aa6b8!important;font-size:10px!important;font-weight:600!important;letter-spacing:.02em!important}
-.auth-field input{
-  display:block!important;width:100%!important;height:46px!important;padding:0 13px!important;
-  border-radius:11px!important;border:1px solid rgba(255,255,255,.10)!important;
-  outline:none!important;background:#080f19!important;color:#edf3fb!important;
-  font-size:13px!important;transition:border-color .18s,box-shadow .18s,background .18s!important;
-}
-.auth-field input::placeholder{color:#4f5c70!important}
-.auth-field input:focus{border-color:#3769db!important;background:#0a121e!important;box-shadow:0 0 0 3px rgba(55,105,219,.13)!important}
-.auth-primary{
-  display:block!important;width:100%!important;height:46px!important;border:0!important;border-radius:11px!important;
-  background:linear-gradient(135deg,#356cf0,#2458d6)!important;color:#fff!important;
-  font-size:13px!important;font-weight:600!important;box-shadow:0 10px 24px rgba(35,88,214,.20)!important;
-  transition:transform .18s,filter .18s,box-shadow .18s!important;
-}
-.auth-primary:hover:not(:disabled){filter:brightness(1.08)!important;transform:translateY(-1px)!important;box-shadow:0 14px 28px rgba(35,88,214,.27)!important}
-.auth-primary:disabled{opacity:.6!important;cursor:wait!important}
-.auth-link{color:#7198f6!important;background:none!important;border:0!important;padding:0!important;font-size:11px!important;text-decoration:none!important}
-.auth-link:hover{text-decoration:underline!important;color:#91afff!important}
-.auth-divider{display:flex!important;align-items:center!important;gap:12px!important;margin:20px 0 14px!important;color:#59677b!important;font:500 9px 'IBM Plex Mono',monospace!important}
-.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:rgba(255,255,255,.075)}
-.auth-google{
-  display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:44px!important;
-  border:1px solid rgba(255,255,255,.10)!important;border-radius:11px!important;background:#111a29!important;color:#dce4ef!important;
-  font-size:12px!important;font-weight:500!important;transition:.18s!important;
-}
-.auth-google:before{content:"G";width:20px;height:20px;display:grid;place-items:center;margin-right:8px;border-radius:6px;background:#f4f6f9;color:#263142;font-weight:700;font-size:11px}
-.auth-google:hover:not(:disabled){background:#162235!important;border-color:rgba(255,255,255,.17)!important;transform:translateY(-1px)!important}
-.auth-switch{margin-top:24px!important;text-align:center!important;color:#68758a!important;font-size:11px!important}
-.auth-switch .auth-link{margin-left:4px!important;font-weight:600!important}
-@media(max-width:560px){
- .auth-shell{padding:18px!important}
- .auth-card{width:min(100%,430px)!important;padding:30px 24px 25px!important;border-radius:20px!important}
- .auth-brand{margin-bottom:28px!important}
- .auth-title{font-size:27px!important}
-}
-
+/* ===== Almanac authentication — Google-first spatial sign-in ===== */
+.auth-shell{position:fixed!important;inset:0!important;z-index:200!important;min-height:100vh!important;width:100%!important;display:grid!important;place-items:center!important;padding:28px!important;overflow:auto!important;background:radial-gradient(900px 600px at 14% 15%,rgba(52,104,255,.22),transparent 60%),radial-gradient(700px 520px at 88% 82%,rgba(41,91,207,.12),transparent 62%),linear-gradient(135deg,#050912 0%,#09111d 52%,#050912 100%)!important}
+.auth-shell:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.38;background-image:radial-gradient(rgba(255,255,255,.055) .6px,transparent .6px);background-size:7px 7px}
+.auth-shell:after{content:"";position:absolute;width:620px;height:620px;border-radius:50%;border:1px solid rgba(83,126,235,.10);box-shadow:0 0 0 70px rgba(83,126,235,.025),0 0 0 140px rgba(83,126,235,.018);right:-220px;top:-230px;pointer-events:none}
+.auth-card{position:relative!important;z-index:2!important;width:min(100%,520px)!important;padding:44px 46px 40px!important;margin:auto!important;background:linear-gradient(145deg,rgba(15,24,39,.94),rgba(7,13,23,.97))!important;border:1px solid rgba(255,255,255,.105)!important;border-radius:30px!important;box-shadow:0 40px 110px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,255,255,.045)!important;overflow:hidden!important;text-align:center!important}
+.auth-card:before{content:"";position:absolute;left:12%;right:12%;top:0;height:2px;background:linear-gradient(90deg,transparent,#4779f3 25%,#8bb0ff 50%,#4779f3 75%,transparent);opacity:.9}
+.auth-brand{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;margin:0 0 34px!important}
+.auth-brand .mark{width:48px!important;height:48px!important;border-radius:15px!important;display:grid!important;place-items:center!important;background:linear-gradient(145deg,#3c73f2,#1949bb)!important;color:white!important;font:600 23px Georgia,serif!important;box-shadow:0 12px 30px rgba(35,88,214,.30)!important}
+.auth-brand h1{margin:0!important;color:#f5f7fb!important;font:650 24px Inter,system-ui,sans-serif!important;letter-spacing:-.035em!important;text-align:left!important}.auth-sub{margin-top:4px!important;color:#68778d!important;font:500 8px 'IBM Plex Mono',monospace!important;letter-spacing:.16em!important;text-align:left!important}
+.auth-title{margin:0!important;color:#f2f5fa!important;font:650 34px Inter,system-ui,sans-serif!important;letter-spacing:-.045em!important}.auth-copy{max-width:360px!important;margin:10px auto 26px!important;color:#8591a5!important;font-size:14px!important;line-height:1.6!important}
+.auth-environment-note{margin:0 auto 20px!important;max-width:400px!important;padding:12px 14px!important;border:1px solid rgba(70,112,210,.22)!important;border-radius:13px!important;background:rgba(45,82,154,.10)!important;color:#8797b0!important;font-size:11px!important;line-height:1.5!important;text-align:left!important}.auth-environment-note strong{display:block!important;color:#b9cbef!important;margin-bottom:2px!important;font-weight:600!important}
+.auth-error{margin:0 0 18px!important;padding:12px 14px!important;border-radius:12px!important;background:rgba(135,44,42,.16)!important;border:1px solid rgba(220,94,87,.26)!important;color:#efa6a0!important;font-size:11px!important;line-height:1.45!important;text-align:left!important}
+.auth-google{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:56px!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:15px!important;background:#f7f9fc!important;color:#182131!important;font-size:14px!important;font-weight:650!important;letter-spacing:-.01em!important;box-shadow:0 12px 28px rgba(0,0,0,.18)!important;transition:transform .18s,box-shadow .18s,background .18s!important}.auth-google:before{content:"G";width:24px;height:24px;display:grid;place-items:center;margin-right:10px;border-radius:7px;background:#fff;color:#4285f4;font-weight:800;font-size:14px;border:1px solid #e3e8f0}.auth-google:hover:not(:disabled){transform:translateY(-2px)!important;background:#fff!important;box-shadow:0 18px 34px rgba(0,0,0,.25)!important}.auth-google:disabled{opacity:.62!important;cursor:wait!important}
+.auth-helper{display:flex!important;justify-content:center!important;gap:8px!important;margin-top:20px!important;color:#66748a!important;font-size:11px!important}.auth-helper-dot{width:5px;height:5px;border-radius:50%;background:#4d7cf3;align-self:center;box-shadow:0 0 10px rgba(77,124,243,.6)}
+.auth-footer{margin-top:28px!important;padding-top:18px!important;border-top:1px solid rgba(255,255,255,.07)!important;color:#59677b!important;font-size:10px!important;line-height:1.5!important}.auth-footer b{color:#8d9bb0!important;font-weight:600!important}
+@media(max-width:560px){.auth-shell{padding:16px!important}.auth-card{width:min(100%,470px)!important;padding:34px 22px 28px!important;border-radius:24px!important}.auth-brand{margin-bottom:26px!important}.auth-title{font-size:29px!important}}
 
 /* ===== Smart Dashboard day view v2 — aligned, spacious timeline ===== */
 .day-view-pro{width:100%;height:calc(100vh - 104px);display:flex;flex-direction:column;gap:14px;min-height:0}
@@ -185,9 +119,8 @@ body{font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut,
-  sendPasswordResetEmail, setPersistence, browserLocalPersistence
+  getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, GoogleAuthProvider, signOut,
+  setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   initializeFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp
@@ -409,7 +342,7 @@ const googleProvider = new GoogleAuthProvider();
   function renderAuth(){
     const shell = el('div',{class:'auth-shell'});
     const card = el('div',{class:'auth-card'});
-    const isLogin = state.authMode==="login";
+    const isFile = location.protocol === 'file:';
 
     card.appendChild(el('div',{class:'auth-brand'},[
       el('div',{class:'mark'},[txt('A')]),
@@ -418,99 +351,52 @@ const googleProvider = new GoogleAuthProvider();
         el('div',{class:'auth-sub'},[txt('CALENDAR · SCHEDULER')])
       ])
     ]));
-    card.appendChild(el('h2',{class:'auth-title'},[txt(isLogin?'Welcome back':'Create your account')]));
-    card.appendChild(el('p',{class:'auth-copy'},[txt(isLogin?'Sign in to access your cloud calendar.':'Create a secure account for your cloud calendar.')]));
-    if(location.protocol==='file:') card.appendChild(el('div',{class:'auth-environment-note'},[
-      el('strong',{},[txt('Local preview detected')]),
-      txt(' Firebase Authentication works reliably when Almanac is opened from http://localhost rather than directly as a file. Use the included run-almanac.bat file to start it.')
+    card.appendChild(el('h2',{class:'auth-title'},[txt('Your calendar, ready.')]))
+    card.appendChild(el('p',{class:'auth-copy'},[txt('Sign in securely with Google to access your cloud calendar, events and schedule.')]));
+
+    if(isFile) card.appendChild(el('div',{class:'auth-environment-note'},[
+      el('strong',{},[txt('Open Almanac through localhost')]),
+      txt(' Google sign-in requires a web origin. Run the included launcher and open the localhost address instead of double-clicking the HTML file.')
     ]));
 
     if(state.authError) card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
 
-    const email = el('input',{type:'email',id:'auth-email',placeholder:'you@example.com',autocomplete:'email'});
-    const password = el('input',{type:'password',id:'auth-password',placeholder:'Password',autocomplete:isLogin?'current-password':'new-password'});
-    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Email')]),email]));
-    card.appendChild(el('div',{class:'auth-field'},[el('label',{},[txt('Password')]),password]));
-
-    const submitAuth = async()=>{
-      if(state.authBusy) return;
-      const emailValue=email.value.trim(), passwordValue=password.value;
-      if(!emailValue || !passwordValue){state.authError="Enter your email and password.";render();return;}
-      if(!/^\S+@\S+\.\S+$/.test(emailValue)){state.authError="Please enter a valid email address.";render();return;}
-      state.authBusy=true;
-      state.authError=null;
-      render();
-      try{
-        // Do not block sign-in on browser storage/persistence.
-        const request = isLogin
-          ? signInWithEmailAndPassword(auth,emailValue,passwordValue)
-          : createUserWithEmailAndPassword(auth,emailValue,passwordValue);
-        await Promise.race([
-          request,
-          new Promise((_,reject)=>setTimeout(()=>reject(Object.assign(new Error('Firebase authentication timed out.'),{code:'auth/network-request-failed'})),20000))
-        ]);
-      }catch(err){
-        console.error('Firebase authentication failed:', err);
-        state.authBusy=false;
-        state.authError=friendlyAuthError(err);
-        render();
-      }
-    };
-
-    card.appendChild(el('button',{class:'auth-primary',disabled:state.authBusy,style:state.authBusy?'opacity:.65;cursor:wait;':'',onclick:submitAuth},[txt(state.authBusy?(isLogin?'Signing in…':'Creating account…'):(isLogin?'Sign in':'Create account'))]));
-
-    if(isLogin){
-      card.appendChild(el('button',{class:'auth-link',type:'button',style:'margin:10px auto 2px;display:block;background:none;border:0;cursor:pointer;font:inherit;',disabled:state.authBusy,onclick:async()=>{
-        const emailValue=email.value.trim();
-        if(!/^\S+@\S+\.\S+$/.test(emailValue)){state.authError='Enter your email first, then choose Forgot password.';render();return;}
-        try{
-          state.authBusy=true; state.authError=null; render();
-          await sendPasswordResetEmail(auth,emailValue);
-          state.authBusy=false; state.authError='Password reset email sent. Check your inbox.'; render();
-        }catch(err){
-          console.error('Password reset failed:',err);
-          state.authBusy=false; state.authError=friendlyAuthError(err); render();
-        }
-      }},[txt('Forgot password?')]));
-    }
-
-    card.appendChild(el('div',{class:'auth-divider'},[txt('OR')]));
-    card.appendChild(el('button',{
-      class:'auth-google',
-      disabled:state.authBusy,
-      style:state.authBusy?'opacity:.6;cursor:wait;':'',
+    const googleBtn = el('button',{
+      class:'auth-google', type:'button', disabled:state.authBusy || isFile,
+      style:state.authBusy?'cursor:wait;':'',
       onclick:async()=>{
-        if(state.authBusy) return;
-
-        // OAuth popups need a real web origin. Opening the downloaded HTML
-        // directly with file:// can cause Firebase to cancel the popup flow.
-        if(location.protocol === 'file:'){
-          state.authError = "Google sign-in needs the app to run from http://localhost or a hosted HTTPS address. Email/password sign-in can still be tested here.";
-          render();
-          return;
-        }
-
+        if(state.authBusy || isFile) return;
+        state.authBusy=true; state.authError=null; render();
         try{
-          state.authBusy=true;
-          state.authError=null;
-          render();
-          await signInWithPopup(auth,googleProvider);
+          googleProvider.setCustomParameters({prompt:'select_account'});
+          // Popup first gives the fastest experience. If the browser blocks it,
+          // fall back to Firebase's redirect flow automatically.
+          try{
+            await signInWithPopup(auth,googleProvider);
+          }catch(err){
+            const code=err?.code||'';
+            if(code==='auth/popup-blocked' || code==='auth/popup-closed-by-user' || code==='auth/cancelled-popup-request'){
+              await signInWithRedirect(auth,googleProvider);
+              return;
+            }
+            throw err;
+          }
         }catch(err){
-          console.error(err);
+          console.error('Google authentication failed:',err);
           state.authBusy=false;
           state.authError=friendlyAuthError(err);
           render();
         }
       }
-    },[txt(state.authBusy?'Opening Google…':'Continue with Google')]));
+    },[txt(state.authBusy?'Connecting to Google…':'Continue with Google')]);
+    card.appendChild(googleBtn);
 
-    card.appendChild(el('div',{class:'auth-switch'},[
-      txt(isLogin?"Don't have an account? ":"Already have an account? "),
-      el('button',{class:'auth-link',onclick:()=>{
-        state.authMode=isLogin?'register':'login';
-        state.authError=null;
-        render();
-      }},[txt(isLogin?'Create one':'Sign in')])
+    card.appendChild(el('div',{class:'auth-helper'},[
+      el('span',{class:'auth-helper-dot'}),txt('One secure sign-in · No password to remember')
+    ]));
+    card.appendChild(el('div',{class:'auth-footer'},[
+      txt('By continuing, you use your Google account to securely access Almanac. '),
+      el('b',{},[txt('Your calendar remains private to your account.')])
     ]));
     return shell.appendChild(card), shell;
   }
