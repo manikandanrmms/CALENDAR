@@ -363,37 +363,9 @@ const googleProvider = new GoogleAuthProvider();
 
     const googleBtn = el('button',{
       class:'auth-google', type:'button', disabled:false,
+      'data-google-login':'true',
       'aria-disabled':state.authBusy?'true':'false',
-      style:state.authBusy?'cursor:wait;':'',
-      onclick:async()=>{
-        if(state.authBusy) return;
-        if(isFile){
-          state.authError='Google sign-in needs a web origin. Please launch Almanac with run-almanac-smart-v8.bat and open the localhost address.';
-          render();
-          return;
-        }
-        state.authBusy=true; state.authError=null; render();
-        try{
-          googleProvider.setCustomParameters({prompt:'select_account'});
-          // Popup first gives the fastest experience. If the browser blocks it,
-          // fall back to Firebase's redirect flow automatically.
-          try{
-            await signInWithPopup(auth,googleProvider);
-          }catch(err){
-            const code=err?.code||'';
-            if(code==='auth/popup-blocked' || code==='auth/popup-closed-by-user' || code==='auth/cancelled-popup-request'){
-              await signInWithRedirect(auth,googleProvider);
-              return;
-            }
-            throw err;
-          }
-        }catch(err){
-          console.error('Google authentication failed:',err);
-          state.authBusy=false;
-          state.authError=friendlyAuthError(err);
-          render();
-        }
-      }
+      style:state.authBusy?'cursor:wait;':''
     },[txt(state.authBusy?'Connecting to Google…':'Continue with Google')]);
     card.appendChild(googleBtn);
 
@@ -1091,7 +1063,29 @@ const googleProvider = new GoogleAuthProvider();
   }
 
 
-  // Firebase authentication controls access to the calendar.
+  // Google login uses delegated click handling so re-rendering the auth screen
+  // can never detach the button's handler. Redirect is the reliable path on
+  // GitHub Pages and avoids popup blockers / browser privacy restrictions.
+  document.addEventListener('click', async (e)=>{
+    const btn = e.target.closest && e.target.closest('[data-google-login="true"]');
+    if(!btn || state.authBusy) return;
+    e.preventDefault();
+    state.authBusy = true;
+    state.authError = null;
+    render();
+    try{
+      if(location.protocol === 'file:'){
+        throw Object.assign(new Error('Google sign-in needs a web origin. Please open Almanac through the included localhost launcher.'), {code:'auth/web-origin-required'});
+      }
+      googleProvider.setCustomParameters({prompt:'select_account'});
+      await signInWithRedirect(auth, googleProvider);
+    }catch(err){
+      console.error('Google authentication failed:', err);
+      state.authBusy = false;
+      state.authError = friendlyAuthError(err);
+      render();
+    }
+  });
 
   document.addEventListener('keydown',e=>{
     if(e.target && ['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
