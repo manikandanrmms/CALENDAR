@@ -156,6 +156,26 @@ body{font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 .modal-head{display:flex;align-items:flex-start;justify-content:space-between;padding:25px 24px 4px 28px}.modal-kicker{display:block;font-size:9px;font-weight:700;letter-spacing:.15em;color:#4f80ef;margin-bottom:6px}.modal h3{font-size:25px!important;line-height:1.1;margin:0!important;padding:0!important;letter-spacing:-.03em;color:#f5f7fb!important}.modal-close{width:34px;height:34px;border:1px solid #263247;border-radius:50%;background:#111a29;color:#8d9aae;font-size:22px;line-height:1;display:grid;place-items:center}.modal-close:hover{background:#1a273b;color:#fff;border-color:#3a4b66}.modal h3:after{content:'Plan your time with clarity';display:block;font-size:11px;font-weight:400;letter-spacing:.02em;color:#75839a;margin-top:7px}
 .modal .field{padding:0 28px;margin:16px 0}.modal .field label{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7f8ca0!important;margin:0 0 7px}.modal .field input,.modal .field textarea{display:block;width:100%;min-height:44px;padding:11px 13px;border-radius:12px!important;border:1px solid #263247!important;background:#09111d!important;color:#edf2f7!important;outline:none;transition:.2s}.modal .field input:focus,.modal .field textarea:focus{border-color:#3d70e9!important;box-shadow:0 0 0 3px rgba(47,103,246,.14)!important;background:#0b1524!important}.modal .field input::placeholder,.modal .field textarea::placeholder{color:#56647a!important}.modal .field textarea{min-height:88px;resize:vertical}.modal .row2{display:grid!important;grid-template-columns:1fr 1fr;gap:0;margin:0}.modal .row2 .field{margin:16px 0}.modal .cat-picker{display:grid!important;grid-template-columns:repeat(4,1fr);gap:8px}.modal .cat-opt{min-height:48px!important;display:flex!important;align-items:center;gap:8px;padding:10px 11px!important;border:1px solid #202c40!important;border-radius:12px!important;background:#09111d!important;color:#8f9caf!important;cursor:pointer;transition:.2s!important;font-size:11px}.modal .cat-opt:hover{background:#101b2d!important;border-color:#34445f!important;color:#d8dfeb!important;transform:translateY(-1px)}.modal .cat-opt.selected{background:linear-gradient(180deg,#172a4b,#11213a)!important;border-color:#3b6fe8!important;color:#e5ecff!important;box-shadow:inset 0 0 0 1px rgba(91,133,239,.14),0 8px 22px rgba(0,0,0,.16)}.modal .cat-opt .sw{width:9px;height:9px;border-radius:50%;background:#4778f4;box-shadow:0 0 10px rgba(71,120,244,.35)}.modal .cat-opt .swatch-personal{background:#5bc58b}.modal .cat-opt .swatch-focus{background:#b58941}.modal .cat-opt .swatch-other{background:#8490a3}.modal .err{margin:0 28px 16px;padding:10px 12px;border-radius:11px;background:#351719!important;border:1px solid #67302d!important;color:#efaaa3!important;font-size:11px}.modal-actions{display:flex!important;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding:16px 28px 24px;border-top:1px solid rgba(255,255,255,.07);background:rgba(7,12,21,.28)}.modal-actions>div:last-child{display:flex;gap:8px}.modal-actions .btn{min-width:92px;height:40px;padding:0 16px;border-radius:11px!important;border:1px solid #29364b!important;font-size:12px;font-weight:600}.modal-actions .btn-ghost{background:#111a29!important;color:#aeb8c8!important}.modal-actions .btn-ghost:hover{background:#172235!important;color:#eef2f7!important}.modal-actions .btn-primary{background:#2f67f6!important;border-color:#3d72ef!important;box-shadow:0 8px 22px rgba(47,103,246,.22)}.modal-actions .btn-primary:hover{background:#3d75ff!important;transform:translateY(-1px)}.modal-actions .btn-danger{background:#351719!important;border-color:#5b292a!important;color:#e7aaa4!important}.modal-actions .btn-danger:hover{background:#471d20!important}.modal .event-composer-icon{display:none}
 @media(max-width:600px){.overlay{padding:10px!important;align-items:flex-end}.modal{width:100%;max-height:92vh;border-radius:24px 24px 18px 18px!important}.modal h3{padding:22px 20px 4px!important}.modal .field{padding:0 20px;margin:14px 0}.modal .row2{grid-template-columns:1fr 1fr}.modal .cat-picker{grid-template-columns:1fr 1fr!important}.modal-actions{padding:14px 20px 20px!important}.modal-actions .btn{min-width:80px}}
+
+/* ===== v6 Schedule / Gantt-inspired calendar view ===== */
+.schedule-view{height:calc(100vh - 106px);display:flex;flex-direction:column;gap:12px;min-height:0}
+.schedule-toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#0d1420;border:1px solid #202c3e;border-radius:14px}
+.schedule-range{display:flex;align-items:center;gap:10px}.schedule-range strong{font-size:14px;color:#edf2f8}.schedule-range span{font-size:10px;color:#69778b}
+.schedule-tools{display:flex;gap:7px}.schedule-tool{height:32px;padding:0 10px;border:1px solid #253249;border-radius:8px;background:#111a29;color:#aab6c7;font-size:10px;cursor:pointer}.schedule-tool:hover{background:#172236;color:#fff}
+.schedule-board{flex:1;min-height:0;overflow:auto;background:#0a111b;border:1px solid #202c3e;border-radius:16px;box-shadow:0 20px 45px rgba(0,0,0,.18)}
+.schedule-header,.schedule-row{display:grid;grid-template-columns:300px repeat(7,minmax(110px,1fr));min-width:1080px}
+.schedule-header{position:sticky;top:0;z-index:8;background:#0d1420;border-bottom:1px solid #243149}
+.schedule-header>div{padding:11px 12px;border-right:1px solid rgba(120,143,177,.11)}
+.schedule-header .task-head{color:#68768a;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+.schedule-day{display:flex;flex-direction:column;gap:3px}.schedule-day b{font-size:11px;color:#dfe6ef}.schedule-day span{font-size:9px;color:#637188}.schedule-day.today b{color:#6f9bff}.schedule-day.today{background:rgba(47,103,246,.07)}
+.schedule-row{min-height:74px;border-bottom:1px solid rgba(120,143,177,.10)}
+.schedule-row:hover{background:rgba(255,255,255,.015)}
+.schedule-task{padding:11px 14px;border-right:1px solid rgba(120,143,177,.11);position:sticky;left:0;z-index:3;background:#0a111b}.schedule-task-main{display:flex;align-items:center;gap:9px}.schedule-dot{width:8px;height:8px;border-radius:50%;background:#4778f4;flex:0 0 auto}.schedule-dot.personal{background:#55c897}.schedule-dot.focus{background:#c79b48}.schedule-dot.other{background:#8793a5}.schedule-task-title{font-size:11px;font-weight:650;color:#dfe6ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.schedule-task-meta{font-size:9px;color:#657389;margin:6px 0 0 17px}.schedule-day-cell{position:relative;border-right:1px solid rgba(120,143,177,.07);padding:9px 7px;min-height:74px}.schedule-day-cell.today{background:rgba(47,103,246,.035)}
+.schedule-event-bar{height:42px;border-radius:9px;padding:7px 9px;background:linear-gradient(135deg,#1b3561,#13233d);border:1px solid rgba(80,126,226,.35);border-left:3px solid #4d7ff1;color:#dce7fa;cursor:pointer;box-shadow:0 7px 18px rgba(0,0,0,.16);transition:.18s;position:relative;overflow:hidden}.schedule-event-bar:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(0,0,0,.28);border-color:#5784e8}.schedule-event-bar.personal{background:linear-gradient(135deg,#163c35,#102a25);border-left-color:#55c897;border-color:rgba(85,200,151,.3)}.schedule-event-bar.focus{background:linear-gradient(135deg,#45351b,#2e2415);border-left-color:#c79b48;border-color:rgba(199,155,72,.3)}.schedule-event-bar.other{background:linear-gradient(135deg,#252d39,#19212c);border-left-color:#8793a5;border-color:rgba(135,147,165,.28)}
+.schedule-event-title{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.schedule-event-time{font-size:8px;color:#829ed1;margin-top:4px}.schedule-event-bar.personal .schedule-event-time{color:#70cda8}.schedule-event-bar.focus .schedule-event-time{color:#d2ad69}
+.schedule-empty{padding:42px;text-align:center;color:#68768a}.schedule-empty b{display:block;color:#cbd4e0;font-size:13px;margin-bottom:6px}.schedule-empty span{font-size:10px}
+@media(max-width:900px){.schedule-toolbar{align-items:flex-start;gap:8px}.schedule-header,.schedule-row{grid-template-columns:220px repeat(7,105px);min-width:955px}}
+
 </style>
 </head>
 <body>
@@ -221,7 +241,7 @@ const googleProvider = new GoogleAuthProvider();
 
   const state = {
     events: [],           // {id, title, date:"YYYY-MM-DD", start:"HH:MM", end:"HH:MM", category, notes}
-    view: "month",        // "month" | "day"
+    view: "month",        // "month" | "day" | "schedule"
     motion:"none",           // "next" | "prev" | "today" | "none"
     cursor: new Date(),   // month being viewed / selected day
     selectedDay: new Date(),
@@ -712,9 +732,12 @@ const googleProvider = new GoogleAuthProvider();
     } else if(state.view==='month'){
       if(state.motion && state.motion!=='none') canvas.classList.add('motion-'+state.motion);
       canvas.appendChild(renderMonthGrid());
-    } else {
+    } else if(state.view==='day') {
       if(state.motion && state.motion!=='none') canvas.classList.add('motion-'+state.motion);
       canvas.appendChild(renderDayView());
+    } else {
+      if(state.motion && state.motion!=='none') canvas.classList.add('motion-'+state.motion);
+      canvas.appendChild(renderScheduleView());
     }
     state.motion = 'none';
     main.appendChild(canvas);
@@ -755,7 +778,9 @@ const googleProvider = new GoogleAuthProvider();
     const top = el('div',{class:'topbar'});
     let titleStr = state.view==='month'
       ? MONTHS[state.cursor.getMonth()]+' '+state.cursor.getFullYear()
-      : state.selectedDay.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
+      : state.view==='day'
+        ? state.selectedDay.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'})
+        : 'Schedule · '+state.selectedDay.toLocaleDateString(undefined,{month:'short', day:'numeric', year:'numeric'});
     const left = el('div',{class:'topbar-left'},[
       el('h2',{},[txt(titleStr)]),
       el('button',{class:'today-btn',onclick:()=>{
@@ -786,7 +811,8 @@ const googleProvider = new GoogleAuthProvider();
 
     const toggle=el('div',{class:'view-toggle'},[
       el('button',{class:'view-btn'+(state.view==='month'?' active':''),onclick:()=>{state.motion='today';state.view='month';state.drawerOpen=false;render();}},[txt('Month')]),
-      el('button',{class:'view-btn'+(state.view==='day'?' active':''),onclick:()=>{state.motion='today';state.view='day';state.drawerOpen=false;render();}},[txt('Day')])
+      el('button',{class:'view-btn'+(state.view==='day'?' active':''),onclick:()=>{state.motion='today';state.view='day';state.drawerOpen=false;render();}},[txt('Day')]),
+      el('button',{class:'view-btn'+(state.view==='schedule'?' active':''),onclick:()=>{state.motion='today';state.view='schedule';state.drawerOpen=false;render();}},[txt('Schedule')])
     ]);
     top.appendChild(left); top.appendChild(command); top.appendChild(toggle);
     return top;
@@ -798,7 +824,7 @@ const googleProvider = new GoogleAuthProvider();
       state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth()+dir, 1);
     } else {
       const d = new Date(state.selectedDay);
-      d.setDate(d.getDate()+dir);
+      d.setDate(d.getDate()+ (state.view==='schedule' ? dir*7 : dir));
       state.selectedDay = d;
       state.cursor = new Date(d.getFullYear(), d.getMonth(),1);
     }
@@ -948,6 +974,54 @@ const googleProvider = new GoogleAuthProvider();
       ]));
     }
     return wrap;
+  }
+
+
+  function renderScheduleView(){
+    const wrap=el('div',{class:'schedule-view'});
+    const base=new Date(state.selectedDay); base.setHours(0,0,0,0);
+    const start=new Date(base); start.setDate(start.getDate()-2);
+    const days=[]; for(let i=0;i<7;i++){ const d=new Date(start); d.setDate(start.getDate()+i); days.push(d); }
+    const end=new Date(days[6]); end.setDate(end.getDate()+1);
+    const range=days[0].toLocaleDateString(undefined,{month:'short',day:'numeric'})+' – '+days[6].toLocaleDateString(undefined,{month:'short',day:'numeric'});
+    const toolbar=el('div',{class:'schedule-toolbar'},[
+      el('div',{class:'schedule-range'},[
+        el('strong',{},[txt('Schedule')]),el('span',{},[txt(range)])
+      ]),
+      el('div',{class:'schedule-tools'},[
+        el('button',{class:'schedule-tool',onclick:()=>{state.selectedDay=new Date();state.cursor=new Date(state.selectedDay.getFullYear(),state.selectedDay.getMonth(),1);render();}},[txt('Today')]),
+        el('button',{class:'schedule-tool',onclick:()=>openModal(null,state.selectedDay,'09:00')},[txt('+ Add event')])
+      ])
+    ]); wrap.appendChild(toolbar);
+    const board=el('div',{class:'schedule-board'});
+    const header=el('div',{class:'schedule-header'},[el('div',{class:'task-head'},[txt('EVENT / DETAILS')])]);
+    days.forEach(d=>{ const today=sameDay(d,new Date()); header.appendChild(el('div',{class:'schedule-day'+(today?' today':'')},[
+      el('b',{},[txt(d.toLocaleDateString(undefined,{weekday:'short'}).toUpperCase())]),
+      el('span',{},[txt(d.toLocaleDateString(undefined,{month:'short',day:'numeric'}))])
+    ])); }); board.appendChild(header);
+    const events=state.events.filter(ev=>ev.date>=dateKey(days[0])&&ev.date<=dateKey(days[6])).sort((a,b)=>((a.date||'').localeCompare(b.date||'')) || ((a.start||'').localeCompare(b.start||'')));
+    if(!events.length){ board.appendChild(el('div',{class:'schedule-empty'},[el('b',{},[txt('Nothing scheduled')]),el('span',{},[txt('Add an event to see it on the schedule.')])])); wrap.appendChild(board); return wrap; }
+    events.forEach(ev=>{
+      const row=el('div',{class:'schedule-row'});
+      const cat=CATS[ev.category]?.cls||'other';
+      row.appendChild(el('div',{class:'schedule-task'},[
+        el('div',{class:'schedule-task-main'},[el('span',{class:'schedule-dot '+cat}),el('span',{class:'schedule-task-title'},[txt(ev.title||'Untitled')])]),
+        el('div',{class:'schedule-task-meta'},[txt((ev.start?fmtTime(ev.start):'All day')+(ev.end?' · '+fmtTime(ev.end):''))])
+      ]));
+      days.forEach(d=>{
+        const cell=el('div',{class:'schedule-day-cell'+(sameDay(d,new Date())?' today':'')});
+        if(dateKey(d)===ev.date){
+          cell.appendChild(el('div',{class:'schedule-event-bar '+cat,onclick:()=>openModal(ev)},[
+            el('div',{class:'schedule-event-title'},[txt(ev.title||'Untitled')]),
+            el('div',{class:'schedule-event-time'},[txt(ev.start?fmtTime(ev.start):'All day'+(ev.end?' – '+fmtTime(ev.end):''))])
+          ]));
+        }
+        cell.addEventListener('dblclick',()=>openModal(null,d,'09:00'));
+        row.appendChild(cell);
+      });
+      board.appendChild(row);
+    });
+    wrap.appendChild(board); return wrap;
   }
 
   /* ---------------- Modal ---------------- */
