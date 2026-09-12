@@ -116,10 +116,18 @@ body{font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 
 <div class="app" id="app"></div>
 
+<script>
+window.addEventListener("error", function(e){
+  console.error("[Almanac] Runtime error:", e.error || e.message);
+});
+window.addEventListener("unhandledrejection", function(e){
+  console.error("[Almanac] Unhandled promise rejection:", e.reason);
+});
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, signInWithPopup, getRedirectResult, GoogleAuthProvider, signOut,
+  getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut,
   setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
@@ -308,7 +316,8 @@ const googleProvider = new GoogleAuthProvider();
       if(k==='class') e.className = attrs[k];
       else if(k==='html') e.innerHTML = attrs[k];
       else if(k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]);
-      else e.setAttribute(k, attrs[k]);
+      else if(typeof attrs[k] === 'boolean') e[k] = attrs[k];
+      else if(attrs[k] != null) e.setAttribute(k, attrs[k]);
     }
     if(children) children.forEach(c=> c && e.appendChild(c));
     return e;
@@ -326,6 +335,8 @@ const googleProvider = new GoogleAuthProvider();
       "auth/popup-closed-by-user":"Google sign-in was cancelled. Please try again.",
       "auth/cancelled-popup-request":"A Google sign-in window was already in progress. Close any Google sign-in window and click the button once.",
       "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
+      "auth/internal-error":"Firebase returned an internal authentication error. Open the browser Console for the exact Firebase message.",
+      "auth/web-storage-unsupported":"This browser is blocking the storage required by Firebase Authentication. Try a normal Chrome window with third-party cookies/storage allowed for Firebase.",
       "auth/too-many-requests":"Too many attempts. Please try again later.",
       "auth/operation-not-allowed":"Email/password sign-in is not enabled in this Firebase project. Enable it under Firebase Console → Authentication → Sign-in method.",
       "auth/network-request-failed":"Firebase could not reach the authentication service. Check your Internet connection, VPN, firewall, or browser extensions.",
@@ -362,10 +373,11 @@ const googleProvider = new GoogleAuthProvider();
     if(state.authError) card.appendChild(el('div',{class:'auth-error'},[txt(state.authError)]));
 
     const googleBtn = el('button',{
-      class:'auth-google', type:'button', disabled:false,
+      class:'auth-google', type:'button', disabled:state.authBusy,
       'data-google-login':'true',
       'aria-disabled':state.authBusy?'true':'false',
-      style:state.authBusy?'cursor:wait;':''
+      style:state.authBusy?'cursor:wait;':'',
+      onclick:(e)=>{ e.preventDefault(); handleGoogleLogin(); }
     },[txt(state.authBusy?'Connecting to Google…':'Continue with Google')]);
     card.appendChild(googleBtn);
 
@@ -1063,51 +1075,61 @@ const googleProvider = new GoogleAuthProvider();
   }
 
 
-  // Google login uses delegated click handling so re-rendering the auth screen
-  // can never detach the button's handler. Use popup on GitHub Pages: Firebase
-  // documents this as the simpler alternative when redirect flows are affected
-  // by browser third-party-storage restrictions. Any popup failure is surfaced
-  // visibly instead of appearing to do nothing.
-  document.addEventListener('click', async (e)=>{
-    const btn = e.target.closest && e.target.closest('[data-google-login="true"]');
-    if(!btn || state.authBusy) return;
-    e.preventDefault();
+  async function handleGoogleLogin(){
+    if(state.authBusy) return;
+
+    // Update the existing button without re-rendering first. This keeps the
+    // browser's trusted user-gesture context intact for the popup request.
     state.authBusy = true;
     state.authError = null;
-    render();
-    console.log('[Almanac Auth] Google button clicked', {
+    console.log("[Almanac Auth] Starting Google sign-in…");
+
+    const btn = document.querySelector('[data-google-login="true"]');
+    if(btn){
+      btn.disabled = true;
+      btn.textContent = "Connecting to Google…";
+      btn.style.cursor = "wait";
+      btn.setAttribute("aria-disabled","true");
+    }
+
+    console.log("[Almanac Auth] Google button clicked", {
       origin: location.origin,
       href: location.href,
-      authDomain: firebaseConfig.authDomain
+      authDomain: firebaseConfig.authDomain,
+      projectId: firebaseConfig.projectId
     });
+
     try{
-      if(location.protocol === 'file:'){
-        throw Object.assign(new Error('Google sign-in needs a web origin. Please open Almanac through the included localhost launcher.'), {code:'auth/web-origin-required'});
+      if(location.protocol === "file:"){
+        throw Object.assign(
+          new Error("Google sign-in needs a web origin. Please open Almanac through the included localhost launcher."),
+          {code:"auth/web-origin-required"}
+        );
       }
-      googleProvider.setCustomParameters({prompt:'select_account'});
+
+      googleProvider.setCustomParameters({prompt:"select_account"});
+
+      // Keep this call directly inside the user's click handler.
       const result = await signInWithPopup(auth, googleProvider);
-      console.log('[Almanac Auth] Google sign-in succeeded', result?.user?.email || result?.user?.uid);
+
+      console.log(
+        "[Almanac Auth] Google sign-in succeeded",
+        result?.user?.email || result?.user?.uid
+      );
       state.authBusy = false;
     }catch(err){
-      console.error('[Almanac Auth] Google sign-in failed:', err);
+      console.error("[Almanac Auth] Google sign-in failed:", err);
       state.authBusy = false;
       state.authError = friendlyAuthError(err);
       render();
     }
-  });
+  }
 
-  // Consume any pending redirect result left by an earlier v9 build. This is
-  // harmless when no redirect is pending and gives us a visible error if a
-  // previous redirect attempt failed.
-  getRedirectResult(auth).then((result)=>{
-    if(result?.user){
-      console.log('[Almanac Auth] Pending redirect sign-in succeeded', result.user.email || result.user.uid);
-    }
-  }).catch((err)=>{
-    console.error('[Almanac Auth] Pending redirect result failed:', err);
-    state.authBusy = false;
-    state.authError = friendlyAuthError(err);
-    render();
+  document.addEventListener("click", (e)=>{
+    const btn = e.target.closest?.('[data-google-login="true"]');
+    if(!btn) return;
+    e.preventDefault();
+    handleGoogleLogin();
   });
 
   document.addEventListener('keydown',e=>{
